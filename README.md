@@ -20,10 +20,12 @@ This extension is not available on the KNIME's update site yet. However, it can 
 
 ## Package Organization
 
-`scripts`: This directory consists of the source code for all the nodes of KNIME Time Series Extension.
-`Bundled extensions`: Contains zipped files of all the releases of the extension.
-`icons`: All the icons used for the nodes, categories and extension
-`bundling_ymls`: `.yml` files for each operating system.
-`tests`: Testflows for each node
+<p>
+* `scripts`: This directory consists of the source code for all the nodes of KNIME Time Series Extension.
+* `Bundled extensions`: Contains zipped files of all the releases of the extension.
+* `icons`: All the icons used for the nodes, categories and extension
+* `bundling_ymls`: `.yml` files for each operating system.
+* `tests`: Testflows for each node
+</p>
 
 
