@@ -1,15 +1,15 @@
 # Time Series Analysis Extension for KNIME
 
-This repository contains code for the Time Series Analysis extension in KNIME. This extension provides nodes for time series modelling, analysis and processing.
+This repository contains code of the Time Series Analysis extension for [KNIME Analytics Platform](https://www.knime.com/knime-analytics-platform). This extension provides nodes for time series modelling, analysis and processing.
 <br>
 [Add screenshot of the workflow]
 <br>
 [Add screenshot of the ACF & PACF plots]
 <p>
-This extension is developed by Ali Asghar Marvi from the evangelism team at KNIME. The goal of the project is to utilize the bundled python packages that are shipped with KNIME and harness its functionalities and incorporate it within native KNIME nodes especially for Time Series Analysis. 
+This extension is developed by Ali Asghar Marvi from the evangelism team at [KNIME](https://www.knime.com/). The goal of the project is to utilize the bundled python packages that are shipped with KNIME and harness its functionalities and incorporate it within native KNIME nodes especially for Time Series Analysis. 
 </p>
 <p>
-	This extension is based on Pandas datetime functionality and Statsmodels library. The supported data types for timestamps are defined in the KNIME-Core.
+	This extension is based on [Pandas](https://pandas.pydata.org/) datetime functionality and [Statsmodels](https://www.statsmodels.org/stable/index.html) library. The supported data types for timestamps are defined in the [KNIME-Core](https://github.com/knime/knime-core/tree/master/org.knime.core/src/eclipse/org/knime/core/data/date).
 </p>
 
 # Installation
