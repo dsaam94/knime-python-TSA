@@ -1,0 +1,14 @@
+name: time_series # Will be concatenated with the group_id to an ID
+author: Ali Asghar Marvi & Corey Weisinger
+extension_module: scripts/ts_ext # The .py Python module containing the nodes of your extension
+description: Time Series Python Extension # Human readable bundle name / description
+long_description: Replacing Time Series Components in KNIME .
+group_id: org.knime
+version: 0.1.0 # Version of this Python node extension
+vendor: KNIME AG, Zurich, Switzerland
+license_file: LICENSE.TXT # Best practice: put your LICENSE.TXT next to the knime.yml; otherwise you would need to change to path/to/LICENSE.txt
+env_yml_path: #bundling_ymls/ts_env_yml_environment.yml
+  osx-64: bundling_ymls/environment_macos.yml 
+  win-64: bundling_ymls/environment_win64.yml
+  linux-64: bundling_ymls/environment_linux.yml
+  osx-arm64: bundling_ymls/environment_osx-arm-64.yml
