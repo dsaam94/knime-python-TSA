@@ -5,12 +5,12 @@ This repository contains code of the Time Series Analysis extension for [KNIME A
 [Add screenshot of the workflow]
 <br>
 [Add screenshot of the ACF & PACF plots]
-<p>
+<br>
 This extension is developed by Ali Asghar Marvi from the evangelism team at [KNIME](https://www.knime.com/ "KNIME"). The goal of the project is to utilize the bundled python packages that are shipped with KNIME and harness its functionalities and incorporate it within native KNIME nodes especially for Time Series Analysis. 
-</p>
-<p>
+
+<br>
 	This extension is based on [Pandas](https://pandas.pydata.org/ "Pandas") datetime functionality and [Statsmodels](https://www.statsmodels.org/stable/index.html "Statsmodels") library. The supported data types for timestamps are defined in the [KNIME-Core](https://github.com/knime/knime-core/tree/master/org.knime.core/src/eclipse/org/knime/core/data/date "KNIME Date Types").
-</p>
+<br>
 
 # Installation
 
