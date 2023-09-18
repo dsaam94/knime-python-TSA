@@ -5,8 +5,8 @@ This repository contains code of the Time Series Analysis extension for [KNIME A
 ![](imgs/6.png)
 
 <br>
-<br>
-This extension was developed by Ali Asghar Marvi from the evangelism team at [KNIME](https://www.knime.com/ "KNIME"). The project's goal is to utilize the bundled Python packages shipped with KNIME, harness its functionalities, and incorporate it within native KNIME nodes, especially for Time Series Analysis. 
+
+This extension was developed by Ali Asghar Marvi from the evangelism team at [KNIME](https://www.knime.com/ "KNIME"). The project's goal is to utilize the bundled Python packages shipped with KNIME, harness its functionalities, and incorporate it within native KNIME nodes for Time Series Analysis. 
 
 <br>
 
