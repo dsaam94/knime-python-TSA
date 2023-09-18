@@ -17,9 +17,38 @@ This extension is based on [Pandas](https://pandas.pydata.org/ "Pandas") datetim
 
 # Installation
 
-This extension is not available on the KNIME's update site yet. However, it can be manually installed from the "Bundled extensions" directory by locally creating the update site to the zip file of the extension.
+This extension is not available on the KNIME's update site yet. However, it can be manually installed from the "Bundled extensions" directory by locally creating the update site to the bundled folder of the extension.
 <br>
-[Create a guide for installing extension with snapshots]
+
+### Step 1:
+Select the zip file of the version you wish to install. You can navigate to "Bundled extensions" directory in the repository and select the version you wish to install. Please refer to the figure below:
+<br>
+![](imgs/1.png)
+
+### Step 2:
+Click on the zipped file, as shown in image above and click on "View raw" to download it (figure below). 
+<br>
+![](imgs/2.png)
+
+### Step 3:
+Extract the file contents in the zipped file. 
+
+### Step 4:
+Now we will add the local update site pointing to the Time Series extension. Open the KNIME Analytics Platform and navigate to the following preferences window to add the software site at <i>File → Preferences → Install/Update → Available Software Sites</i>. 
+As it can be seen from the figure below to select "Available Software Sites" first and then click "Add" button.
+<br>
+![](imgs/3.png)
+
+### Step 5:
+Set any name to the extension and click on "Local". Select "bundled" folder in the extracted folder from Step 3. Click "Add" and then "Apply and Close" button to close the "Preferences" window.
+<br>
+![](imgs/4.png)
+
+### Step 6:
+Install the Time Series extension via <i>File → Install KNIME Extensions</i>. You will be prompted to verify the contents being installed. Check "Unsigned" option and click "Trust & Selected" button. 
+<br>
+![](imgs/5.png)
+
 
 ## Package Organization
 
