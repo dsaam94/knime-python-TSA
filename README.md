@@ -35,7 +35,8 @@ Extract the file contents in the zipped file.
 
 ### Step 4:
 Now we will add the local update site pointing to the Time Series extension. Open the KNIME Analytics Platform and navigate to the following preferences window to add the software site at <i>File → Preferences → Install/Update → Available Software Sites</i>. 
-As it can be seen from the figure below to select "Available Software Sites" first and then click "Add" button.
+<br>
+As it can be seen from the figure below: select "Available Software Sites" first and then click "Add" button.
 <br>
 ![](imgs/3.png)
 
