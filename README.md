@@ -3,8 +3,7 @@
 This repository contains code of the Time Series Analysis extension for [KNIME Analytics Platform](https://www.knime.com/knime-analytics-platform "KNIME"). This extension provides nodes for time series modelling, analysis and processing.
 <br>
 ![](imgs/6.png)
-<br>
-[Add screenshot of the ACF & PACF plots]
+
 <br>
 <br>
 This extension is developed by Ali Asghar Marvi from the evangelism team at [KNIME](https://www.knime.com/ "KNIME"). The goal of the project is to utilize the bundled python packages that are shipped with KNIME and harness its functionalities and incorporate it within native KNIME nodes especially for Time Series Analysis. 
