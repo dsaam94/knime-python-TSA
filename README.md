@@ -2,7 +2,7 @@
 
 This repository contains code of the Time Series Analysis extension for [KNIME Analytics Platform](https://www.knime.com/knime-analytics-platform "KNIME"). This extension provides nodes for time series modelling, analysis and processing.
 <br>
-[Add screenshot of the workflow]
+![](imgs/6.png)
 <br>
 [Add screenshot of the ACF & PACF plots]
 <br>
