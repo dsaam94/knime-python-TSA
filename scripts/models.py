@@ -15,8 +15,7 @@ __category = knext.category(
     name="Models",
     description="Nodes for modelling Time Series",
     # starting at the root folder of the extension_module parameter in the knime.yml file
-    icon="icons/icon.png",
-    ##after="io",
+    icon="icons/icon.png"
 )
 
 
@@ -26,7 +25,7 @@ __category = knext.category(
 @knext.input_table(name="Input Data", description="Table contains numeric target column to fit SARIMA")
 @knext.output_table(name="Forecast", description="Forecasted values and their standard errors")
 @knext.output_table(name="In-sample & Residuals", description="Residuals from the training model")
-
+@knext.output_table(name="Model Summary", description="Table containing coefficient statistics and other criterion.")
 class SarimaForcaster:
     """
 
@@ -116,10 +115,13 @@ class SarimaForcaster:
 
         # make out-of-sample forecasts
         forecasts = model_fit.forecast(steps = self.sarima_params.predictor_params.number_of_forecasts).to_frame(name="Forecasts")
+
+        # populate model coefficients
+        model_summary = self.model_summary(model_fit)
         
 
 
-        return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals)
+        return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals), knext.Table.from_pandas(model_summary)
 
 
     #function to perform validation on dataframe within execution context
@@ -148,7 +150,39 @@ class SarimaForcaster:
             raise knext.InvalidParametersError(f"""Number of rows must be at least "{max(set_val)}" to train the model """)
 
 
+    def model_summary(self, model):
 
+
+        # estimates of the parameter coefficients
+        coeff = model.params.to_frame()
+
+        # calculate standard deviation of the parameters in the coefficients
+        coeff_errors = model.bse.to_frame().reset_index()
+        coeff_errors["index"] = coeff_errors["index"].apply(lambda x : x + " Std. Err")
+        coeff_errors = coeff_errors.set_index("index")
+
+        # extract log likelihood of the trained model
+        log_likelihood = pd.DataFrame(data = model.llf, index =["Log Likelihood"], columns = [0])
+
+        # extract AIC (Akaike Information Criterion)
+        aic = pd.DataFrame(data = model.aic, index =["AIC"], columns = [0])
+
+        # extract BIC (Bayesian Information Criterion)
+        bic = pd.DataFrame(data = model.bic, index =["BIC"], columns = [0])  
+
+        # extract Mean Squared Error
+        mse  = pd.DataFrame(data = model.mse, index =["MSE"], columns = [0])
+
+        # extract Mean Absolute error
+        mae  = pd.DataFrame(data = model.mae, index =["MAE"], columns = [0])
+
+        summary = pd.concat([coeff, coeff_errors, log_likelihood, aic, bic, mse, mae]).rename(columns={0:"value"})
+
+        return summary
+
+
+        
+        
 
 
 
@@ -162,7 +196,8 @@ class SarimaForcaster:
 @knext.input_table(name="Input Data", description="Table contains numeric target column to fit SARIMA")
 @knext.input_table(name="Exogenous Input", description="Link to exogenous variable")
 @knext.output_table(name="Forecast", description="Forecasted values and their standard errors")
-@knext.output_table(name="In-sample & Residuals", description="Residuals from the training model")       
+@knext.output_table(name="In-sample & Residuals", description="Residuals from the training model")
+@knext.output_table(name="Model Summary", description="Table containing coefficient statistics and other criterion.")       
 class SXForecaster():
     """
 
@@ -254,9 +289,10 @@ class SXForecaster():
         # make out-of-sample forecasts
         forecasts = model_fit.forecast(steps = self.sarimax_params.predictor_params.number_of_forecasts, exog = exog_var_forecasts).to_frame(name="Forecasts")
         
+        # populate model coefficients
+        model_summary = self.model_summary(model_fit)
 
-
-        return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals)
+        return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals), knext.Table.from_pandas(model_summary)
          
      #function to perform validation on dataframe within execution context
     def _exec_validate(self, target, exog_train, exog_forecast):
@@ -324,3 +360,32 @@ class SXForecaster():
                 "The number of forecasts should be equal to the length of the exogenous input for forecasts."
             )             
         
+    def model_summary(self, model):
+
+
+        # estimates of the parameter coefficients
+        coeff = model.params.to_frame()
+
+        # calculate standard deviation of the parameters in the coefficients
+        coeff_errors = model.bse.to_frame().reset_index()
+        coeff_errors["index"] = coeff_errors["index"].apply(lambda x : x + " Std. Err")
+        coeff_errors = coeff_errors.set_index("index")
+
+        # extract log likelihood of the trained model
+        log_likelihood = pd.DataFrame(data = model.llf, index =["Log Likelihood"], columns = [0])
+
+        # extract AIC (Akaike Information Criterion)
+        aic = pd.DataFrame(data = model.aic, index =["AIC"], columns = [0])
+
+        # extract BIC (Bayesian Information Criterion)
+        bic = pd.DataFrame(data = model.bic, index =["BIC"], columns = [0])  
+
+        # extract Mean Squared Error
+        mse  = pd.DataFrame(data = model.mse, index =["MSE"], columns = [0])
+
+        # extract Mean Absolute error
+        mae  = pd.DataFrame(data = model.mae, index =["MAE"], columns = [0])
+
+        summary = pd.concat([coeff, coeff_errors, log_likelihood, aic, bic, mse, mae]).rename(columns={0:"value"})
+
+        return summary
