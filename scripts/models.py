@@ -6,6 +6,7 @@ from utils.settings.models.sarima_x import SarimaxForecasterParms
 import pandas as pd
 import numpy as np
 from statsmodels.tsa.statespace.sarimax import SARIMAX
+import pickle
 
 LOGGER = logging.getLogger(__name__)
 
@@ -26,6 +27,7 @@ __category = knext.category(
 @knext.output_table(name="Forecast", description="Forecasted values and their standard errors")
 @knext.output_table(name="In-sample & Residuals", description="Residuals from the training model")
 @knext.output_table(name="Model Summary", description="Table containing coefficient statistics and other criterion.")
+@knext.output_binary(name="Model",description="Model for SARIMA", id="sarima.model")
 class SarimaForcaster:
     """
 
@@ -118,10 +120,11 @@ class SarimaForcaster:
 
         # populate model coefficients
         model_summary = self.model_summary(model_fit)
-        
 
+        model_binary = pickle.dumps(model_fit)
+        LOGGER.warn(model_binary)
 
-        return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals), knext.Table.from_pandas(model_summary)
+        return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals), knext.Table.from_pandas(model_summary), model_binary
 
 
     #function to perform validation on dataframe within execution context
@@ -197,7 +200,8 @@ class SarimaForcaster:
 @knext.input_table(name="Exogenous Input", description="Link to exogenous variable")
 @knext.output_table(name="Forecast", description="Forecasted values and their standard errors")
 @knext.output_table(name="In-sample & Residuals", description="Residuals from the training model")
-@knext.output_table(name="Model Summary", description="Table containing coefficient statistics and other criterion.")       
+@knext.output_table(name="Model Summary", description="Table containing coefficient statistics and other criterion.")
+@knext.output_binary(name="Trained model",description="Model for SARIMAX", id="sarimax.model") 
 class SXForecaster():
     """
 
@@ -292,7 +296,9 @@ class SXForecaster():
         # populate model coefficients
         model_summary = self.model_summary(model_fit)
 
-        return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals), knext.Table.from_pandas(model_summary)
+        model_binary = pickle.dumps(model_fit)
+
+        return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals), knext.Table.from_pandas(model_summary), bytes(model_binary)
          
      #function to perform validation on dataframe within execution context
     def _exec_validate(self, target, exog_train, exog_forecast):
