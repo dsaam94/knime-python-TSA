@@ -122,7 +122,6 @@ class SarimaForcaster:
         model_summary = self.model_summary(model_fit)
 
         model_binary = pickle.dumps(model_fit)
-        LOGGER.warn(model_binary)
 
         return knext.Table.from_pandas(forecasts), knext.Table.from_pandas(in_samps_residuals), knext.Table.from_pandas(model_summary), model_binary
 
