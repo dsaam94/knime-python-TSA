@@ -80,6 +80,18 @@ class SarimaForcaster:
 
         df = input_1.to_pandas()
         regression_target= df[self.input_column]
+
+
+        #check if log transformation is enabled
+        if (self.sarima_params.learner_params.natural_log):
+
+            val = kutil.check_negative_values(regression_target)
+
+            #raise error if target column contains negative values
+            if (val > 0):
+                raise knext.InvalidParametersError(f" There are '{val}' non-positive values in the target column.")  
+
+            regression_target = np.log(regression_target)
         
         #validate if target variable has any missing values or not
         self._exec_validate(regression_target)
@@ -105,11 +117,16 @@ class SarimaForcaster:
         # produce residuals
         residuals = model_fit.resid
 
+            
         # in-samples
         in_samples = pd.Series(dtype = np.float64)
 
         in_samples = in_samples.append(model_fit.predict(start = 1, dynamic=self.sarima_params.predictor_params.dynamic_check))
-        
+
+        # reverse log transformation for in-sample values 
+        if (self.sarima_params.learner_params.natural_log):
+            in_samples = np.exp(in_samples)
+
 
         # combine residuals and is-samples to as part of one dataframe
         in_samps_residuals = pd.concat([residuals, in_samples], axis=1)
@@ -117,6 +134,10 @@ class SarimaForcaster:
 
         # make out-of-sample forecasts
         forecasts = model_fit.forecast(steps = self.sarima_params.predictor_params.number_of_forecasts).to_frame(name="Forecasts")
+
+        # reverse log transformation for forecasts
+        if (self.sarima_params.learner_params.natural_log):
+            forecasts = np.exp(forecasts)
 
         # populate model coefficients
         model_summary = self.model_summary(model_fit)
@@ -284,14 +305,34 @@ class SXForecaster():
         in_samples = pd.Series(dtype = np.float64)
         in_samples = in_samples.append(model_fit.predict(start = 1, dynamic=self.sarimax_params.predictor_params.dynamic_check))
         
+        #check if log transformation is enabled
+        if (self.sarimax_params.learner_params.natural_log):
+
+            val = kutil.check_negative_values(regression_target)
+
+            #raise error if target column contains negative values
+            if (val > 0):
+                raise knext.InvalidParametersError(f" There are '{val}' non-positive values in the target column.")  
+
+            regression_target = np.log(regression_target)      
 
         # combine residuals and is-samples to as part of one dataframe
         in_samps_residuals = pd.concat([residuals, in_samples], axis=1)
         in_samps_residuals.columns = ["Residuals","In-Samples"]
 
+        # reverse log transformation for in-sample values 
+        if (self.sarimax_params.learner_params.natural_log):
+            in_samples = np.exp(in_samples)
+
         # make out-of-sample forecasts
         forecasts = model_fit.forecast(steps = self.sarimax_params.predictor_params.number_of_forecasts, exog = exog_var_forecasts).to_frame(name="Forecasts")
-        
+
+        # reverse log transformation for forecasts
+        if (self.sarimax_params.learner_params.natural_log):
+            forecasts = np.exp(forecasts)
+
+
+
         # populate model coefficients
         model_summary = self.model_summary(model_fit)
 

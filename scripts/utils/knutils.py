@@ -401,3 +401,9 @@ def number_of_rows(df:pd.Series) -> int:
     """    
     return len(df.index)
 
+def check_negative_values(column: pd.Series) -> int:
+
+    total_neg = (column <= 0).sum()
+
+    return total_neg
+

@@ -67,6 +67,12 @@ class _LearnerParams:
         , min_value=2
         )
     
+    natural_log = knext.BoolParameter(
+        label = "Log Transform"
+        , description = "Check this box to apply natural log on target column. Note that output will be converted to exponential of the predictions. "
+        , default_value = False
+        )
+    
         #validation of parameters
     def validate(self, values):
 
