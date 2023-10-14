@@ -1,9 +1,9 @@
-import sys, os
+# import sys, os
 import logging
 import knime_extension as knext
 
-#create path to refer to knutils file
-sys.path.append(os.path.abspath(os.path.join(os.path.pardir, '..')))
+# #create path to refer to knutils file
+# sys.path.append(os.path.abspath(os.path.join(os.path.pardir, '..', '..')))
 from utils import knutils as kutil
 
 
@@ -15,7 +15,7 @@ from utils import knutils as kutil
 class _LearnerParams:
 
     """
-    A private class containing common parameters for both SARIMA and SARIMAX learner along with its validation functions. 
+    A protected class containing common parameters for both SARIMA and SARIMAX learner along with its validation functions. 
 
     """
 
@@ -95,7 +95,7 @@ class _LearnerParams:
 
 class _PredictorParams:
     """
-    A private class containing common parameters for both SARIMA and SARIMAX predictors along with its validation functions.
+    A protected class containing common parameters for both SARIMA and SARIMAX predictors along with its validation functions.
 
     """
 
@@ -117,124 +117,3 @@ class _PredictorParams:
             raise ValueError("At least one forecast should be made by the model.")
 
 
-
-
-@knext.parameter_group(label="Sarima Model Parameters")
-class SLearnerParams(_LearnerParams):
-    """
-
-    Sarima Learner Parameter class inheriting the private class _LearnerParams above.
-
-    The learner attributes are put together in the parameter group called "Sarima Model Parameters".
-
-    """
-    def __init__(self):
-        super().__init__()
-    
-
-    
-      
-
-@knext.parameter_group(label="Sarima Predictor Parameters")
-class SPredictorParams(_PredictorParams):
-   
-    """
-
-    SARIMA Predictor Parameter class inheriting the private class _PredictorParams above.
-
-    The predictor attributes are put together in the parameter group called "Sarima Model Parameters".
-
-    """
-    
-
-    def __init__(self):
-        super().__init__()
-
-
-
-@knext.parameter_group(label = "Sarima Forecaster Parameters")
-class SarimaForecasterParms():
-    """
-
-    SARIMA Forecaster nodes parameters put together in one complete group called "Sarima Forecaster Parameters"
-
-    """
-
-    learner_params = SLearnerParams()
-    predictor_params = SPredictorParams()
-
-
-
-
-
-
-
-##################################################################
-# """
-# SARIMAX paramter settings with validations
-# """
-##################################################################
-
-@knext.parameter_group(label="Sarimax Model Parameters")
-class SXLearnerParams(_LearnerParams):
-
-
-    """
-
-    SARIMAX Learner Parameter class inheriting the private class _LearnerParams above.
-
-    The learner attributes are put together in the parameter group called "Sarimax Model Parameters".
-
-    An additional column parameter is initialized in this child class by the name, "exog_column".
-
-    This attribute is the column selection of the exogenous variable.
-
-    """   
-    exog_column = knext.ColumnParameter(
-        label = "Exogenous Column"
-        , description="The exogenous column for training "
-        , port_index = 0
-        , column_filter=kutil.is_numeric
-        )
-    
-
-@knext.parameter_group(label="Sarimax Predictor Parameters")
-class SXPredictorParams(_PredictorParams):
-
-
-    """
-
-    SARIMAX Predictor Parameter class inheriting the private class _PredictorParams above.
-
-    The predictor attributes are put together in the parameter group called "Sarimax Predictor Parameters".
-
-    An additional column parameter is initialized in this child class by the name, "exog_column_forecasts".
-
-    This attribute is the column selection of the exogenous variable for the forecasts. Note that number of forecasts should be equal 
-    to the number of rows in this new exogenous column.
-
-    """       
-    
-    exog_column_forecasts = knext.ColumnParameter(
-        label = "Exogenous Column for Forecasting"
-        , description="The exogenous column for forecasting "
-        , port_index = 1
-        , column_filter=kutil.is_numeric
-        )
-
-              
-
-
-@knext.parameter_group(label = "Sarimax Forecaster Parameters")
-class SarimaxForecasterParms():
-
-    """
-
-    SARIMAX Forecaster nodes parameters put together in one complete group called "Sarimax Forecaster Parameters"
-
-    """    
-    learner_params = SXLearnerParams()
-    predictor_params = SXPredictorParams()
-
-
-    

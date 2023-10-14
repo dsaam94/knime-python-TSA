@@ -1,7 +1,7 @@
 name: time_series # Will be concatenated with the group_id to an ID
 author: Ali Asghar Marvi & Corey Weisinger
 bundled_env_name: org_knime_pythonscripting # we re-use the bundled Python environment
-extension_module: scripts/ts_ext # The .py Python module containing the nodes of your extension
+extension_module: src/ts_ext # The .py Python module containing the nodes of your extension
 description: Time Series Python Extension # Human readable bundle name / description
 long_description: Replacing Time Series Components in KNIME .
 group_id: org.knime

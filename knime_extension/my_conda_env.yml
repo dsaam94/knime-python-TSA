@@ -1,0 +1,11 @@
+name: ts_env
+channels:
+  - knime
+  - conda-forge
+dependencies:
+  - packaging
+  - python=3.9
+  - knime-extension
+  - knime-python-base
+  - statsmodels
+  - markdown

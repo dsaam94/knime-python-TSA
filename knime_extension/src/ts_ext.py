@@ -12,11 +12,8 @@ category = knext.category(
     icon="icons/icon.png",
 )
 
-import models
-import processing
-import visuals
+from nodes.models import sarimanode, sarimaxnode
+from nodes.preprocessing import aggreg_gran_node, differencing_node, timestamp_alignment_node
+from nodes.analysis import autocorrnode 
 
-LOGGER.warn(processing)
-LOGGER.warn(visuals)
-LOGGER.warn(models)
 

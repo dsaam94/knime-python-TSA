@@ -1,5 +1,5 @@
 """
-Several utility functions are reused from Harvard's spatial data lab repository
+Several utility functions are reused from Harvard's spatial data lab repository for Geospatial Analytics Extension.
 https://github.com/spatial-data-lab/knime-geospatial-extension/blob/main/knime_extension/src/util/knime_utils.py
 """
 import knime_extension as knext
@@ -85,7 +85,6 @@ def is_time(column: knext.Column)-> bool:
 
 
 
-
 def is_date(column: knext.Column)-> bool:
     """
     Checks if a column is of type date only.
@@ -148,7 +147,7 @@ def check_type(column: str, schema: knext.Schema):
 
 
 
-def convertTimestamp(value):
+def convert_timestamp(value):
     """
     This function converts knime compatible datetime values
     into pandas Timestamp.
@@ -157,7 +156,7 @@ def convertTimestamp(value):
     return pd.Timestamp(value)
 
 
-def extractZone(value):
+def extract_zone(value):
 
     """
     This function extracts the time zone from each timestamp value in the pandas timmestamp column.
@@ -166,7 +165,7 @@ def extractZone(value):
     return value.tz
 
 
-def localizeTimeZone(value, zone):
+def localize_timezone(value, zone):
 
     """
     This function updates the Pandas Timestamp value with the time zone. If "None" is passed timezone will be removed from
@@ -177,7 +176,7 @@ def localizeTimeZone(value, zone):
     return value.tz_localize(zone)
 
 
-def timeGranularityList() -> list:
+def time_granularity_list() -> list:
 
     """
     This function returns list of possible time fields relevant to only Time type values. 
@@ -205,15 +204,15 @@ def cast_to_related_type(value_type:str, column:pd.Series):
     if(DEF_ZONED_DATE_LABEL == value_type):
 
  
-        column = column.apply(convertTimestamp)
+        column = column.apply(convert_timestamp)
 
-        zoneOffset = column.apply(extractZone)
+        zone_offset = column.apply(extract_zone)
 
-        s_dateimezone = column.apply(localizeTimeZone, zone=None)
+        s_dateimezone = column.apply(localize_timezone, zone=None)
 
         s_dateimezone = pd.to_datetime(s_dateimezone, format=ZONED_DATE_TIME_FORMAT)
 
-        return s_dateimezone, DEF_ZONED_DATE_LABEL, zoneOffset
+        return s_dateimezone, DEF_ZONED_DATE_LABEL, zone_offset
 
     # parse dates only
     elif(DEF_DATE_LABEL == value_type):
@@ -328,9 +327,6 @@ def get_type_timestamp(value_type):
 ############################################
 # General Helper Class
 ############################################
-
-
-
 
 
 def column_exists_or_preset(

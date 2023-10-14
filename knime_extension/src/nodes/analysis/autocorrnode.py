@@ -3,7 +3,7 @@ import knime_extension as knext
 from utils import knutils as kutil
 import pandas as pd
 import numpy as np
-from utils.settings.analysis.vis import AutocorrParams
+from ..configs.analysis.autocorr import AutocorrParams
 from statsmodels.graphics.tsaplots import plot_acf
 from statsmodels.graphics.tsaplots import plot_pacf
 from statsmodels.tsa.stattools import acf, pacf
