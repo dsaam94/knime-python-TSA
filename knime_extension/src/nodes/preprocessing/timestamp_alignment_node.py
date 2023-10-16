@@ -1,8 +1,8 @@
 import logging
-import knime_extension as knext
-from utils import knutils as kutil
+import knime.extension as knext
+from util import utils as kutil
 import pandas as pd
-from ..configs.preprocessing.timealign import TimeStampAlignmentParams
+from  ..configs.preprocessing.timealign import TimeStampAlignmentParams
 
 LOGGER = logging.getLogger(__name__)
 

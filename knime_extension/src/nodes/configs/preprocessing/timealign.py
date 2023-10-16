@@ -1,6 +1,5 @@
-import knime_extension as knext
-import pandas as pd
-from utils import knutils as kutil
+import knime.extension as knext
+from util import utils as kutil
 
 
 

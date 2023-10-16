@@ -1,5 +1,5 @@
 from .parent import _LearnerParams, _PredictorParams
-import knime_extension as knext
+import knime.extension as knext
 
 
 

@@ -1,6 +1,6 @@
 import logging
 import knime_extension as knext
-from utils import knutils as kutil
+from util import utils as kutil
 import pandas as pd
 import numpy as np
 from ..configs.analysis.autocorr import AutocorrParams

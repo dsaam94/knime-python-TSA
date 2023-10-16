@@ -1,4 +1,4 @@
 org.tutorial.first_extension:
-	src: C:\Users\Ali.Marvi\OneDrive - KNIME AG\Documents\Python Development for KAP\basic\tutorial_extension
-	conda_env_path: C:\ProgramData\Anaconda3\envs\pzthon_env
-	debug_mode: true
+  src: <LOCAL_PATH_TO>\knime-python-spatial-statistic-nodes\knime_extension # Local path to folder containing the extension files
+  conda_env_path: <LOCAL_PATH_TO>\my_python_env # Path to the local installed Python environment to use
+  debug_mode: true # Optional line, if set to true, it will always use the latest changes of execute/configure, when that method is used within the KNIME Analytics Platform

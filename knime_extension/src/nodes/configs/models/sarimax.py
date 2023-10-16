@@ -1,11 +1,6 @@
 from .parent import _LearnerParams, _PredictorParams
-
-import sys, os
-import knime_extension as knext
-
-#create path to refer to knutils file
-sys.path.append(os.path.abspath(os.path.join(os.path.pardir, '..')))
-from utils import knutils as kutil
+import knime.extension as knext
+from util import utils as kutil
 
 
 

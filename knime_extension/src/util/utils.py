@@ -2,7 +2,7 @@
 Several utility functions are reused from Harvard's spatial data lab repository for Geospatial Analytics Extension.
 https://github.com/spatial-data-lab/knime-geospatial-extension/blob/main/knime_extension/src/util/knime_utils.py
 """
-import knime_extension as knext
+import knime.extension as knext
 import pandas as pd
 from datetime import datetime, date, time, timedelta
 from typing import Callable, Union, Tuple
