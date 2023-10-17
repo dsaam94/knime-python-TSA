@@ -46,17 +46,20 @@ __category = knext.category(
 class AutoCorrNode:
 
 
-    analysisParams = AutocorrParams()
+    analysis_params = AutocorrParams()
 
 
 
     def configure(self, configure_context:knext.ConfigurationContext, input_schema):
        
-       self.analysisParams.target_col = kutil.column_exists_or_preset(
-            configure_context, self.analysisParams.target_col, input_schema, kutil.is_numeric
+       self.analysis_params.target_col = kutil.column_exists_or_preset(
+            configure_context, self.analysis_params.target_col, input_schema, kutil.is_numeric
         )
        
-       return None
+       output_schema = knext.Schema([knext.int32(), knext.double(), knext.double(), knext.double(), knext.double()],
+                                    ["Lags", "ACF", "Margin of Error (ACF)", "PACF", "Margin of Error (PACF)"]) 
+       
+       return output_schema
         
     
 
@@ -77,11 +80,11 @@ class AutoCorrNode:
 
         df = input_table.to_pandas()
 
-        regression_target= df[self.analysisParams.target_col] 
+        regression_target= df[self.analysis_params.target_col] 
         self._exec_validate(regression_target)
 
         # compute acf values along with confidence intervals
-        acf_x, acf_confint = acf(regression_target, nlags=self.analysisParams.max_lag, alpha = __alpha)
+        acf_x, acf_confint = acf(regression_target, nlags=self.analysis_params.max_lag, alpha = __alpha)
 
         margin_error_acf = 0.5*(acf_confint[:,1]- acf_confint[:,0])
 
@@ -90,7 +93,7 @@ class AutoCorrNode:
         acf_x = pd.DataFrame(acf_x, columns=["ACF"])
 
         # compute pacf values along with confidence intervals
-        pacf_x, pacf_confint = pacf(regression_target, nlags=self.analysisParams.max_lag, alpha = __alpha)
+        pacf_x, pacf_confint = pacf(regression_target, nlags=self.analysis_params.max_lag, alpha = __alpha)
 
         margin_error_pacf = 0.5*(pacf_confint[:,1]- pacf_confint[:,0])
 
@@ -99,10 +102,11 @@ class AutoCorrNode:
         pacf_x = pd.DataFrame(pacf_x, columns=["PACF"])
 
         df_out = pd.concat([acf_x, margin_error_acf, pacf_x, margin_error_pacf], axis=1).reset_index().rename(columns={"index":'Lags'})
+        df_out["Lags"] = df_out["Lags"].astype(np.int32)
 
-        fig, ax = plt.subplots(nrows=__nrows, ncols=__ncols, figsize=(__width, __height))
-        plot_acf(regression_target,lags=self.analysisParams.max_lag, ax=ax[0], alpha = __alpha)
-        plot_pacf(regression_target,lags=self.analysisParams.max_lag, ax=ax[1], method='ols', alpha = __alpha)
+        _, ax = plt.subplots(nrows=__nrows, ncols=__ncols, figsize=(__width, __height))
+        plot_acf(regression_target,lags=self.analysis_params.max_lag, ax=ax[0], alpha = __alpha)
+        plot_pacf(regression_target,lags=self.analysis_params.max_lag, ax=ax[1], method='ols', alpha = __alpha)
 
         plt.tight_layout()
         plt.show()
@@ -126,8 +130,8 @@ class AutoCorrNode:
             )
         
         # check maximum lags cannot be more than the number of rows
-        if(self.analysisParams.max_lag >= kutil.number_of_rows(target)):
+        if(self.analysis_params.max_lag >= kutil.number_of_rows(target)):
 
             raise knext.InvalidParametersError(
-                f"Maximum number of lags cannot be greater than or equal to the number of rows"
+                "Maximum number of lags cannot be greater than or equal to the number of rows"
             )
