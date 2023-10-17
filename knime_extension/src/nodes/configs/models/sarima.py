@@ -1,7 +1,6 @@
 from .parent import _LearnerParams, _PredictorParams
 import knime.extension as knext
-
-
+import pickle
 
 @knext.parameter_group(label="Sarima Model Parameters")
 class SLearnerParams(_LearnerParams):
@@ -46,8 +45,3 @@ class SarimaForecasterParms():
 
     learner_params = SLearnerParams()
     predictor_params = SPredictorParams()
-
-
-
-
-

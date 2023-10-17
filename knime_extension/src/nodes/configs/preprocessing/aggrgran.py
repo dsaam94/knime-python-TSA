@@ -1,5 +1,6 @@
 import knime.extension as knext
 from util import utils as kutil
+import pandas as pd
 
 
 

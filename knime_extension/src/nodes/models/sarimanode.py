@@ -75,7 +75,14 @@ class SarimaForcaster:
         if (self.sarima_params.learner_params.natural_log and self.sarima_params.predictor_params.dynamic_check):
             configure_context.set_warning("Enabling dynamic predictions with log transformation can cause invalid predictions.")
 
-        return  None
+        forecast_schema = knext.Column(knext.double(), "Forecasts")
+        insamp_res_schema = knext.Schema([knext.double(), knext.double()],
+                                    ["Residuals","In-Samples"])
+        model_summary_schema = knext.Column(knext.double(), "value")
+        binary_model_schema = knext.BinaryPortObjectSpec("sarima.model")
+       
+
+        return  forecast_schema, insamp_res_schema, model_summary_schema, binary_model_schema 
     
 
     
