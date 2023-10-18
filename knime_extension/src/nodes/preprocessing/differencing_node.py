@@ -25,12 +25,12 @@ class SeasonalDifferencingNode:
     yet to be done
     """
 
-    seasdiffParams = SeasonalDifferencingParams()
+    diff_params = SeasonalDifferencingParams()
         
     def configure(self, configure_context:knext.ConfigurationContext, input_schema):
        
-       self.seasdiffParams.target_column = kutil.column_exists_or_preset(
-            configure_context, self.seasdiffParams.target_column, input_schema, kutil.is_numeric
+       self.diff_params.target_column = kutil.column_exists_or_preset(
+            configure_context, self.diff_params.target_column, input_schema, kutil.is_numeric
         )
        
        return None
@@ -40,11 +40,11 @@ class SeasonalDifferencingNode:
     def execute(self, exec_context: knext.ExecutionContext, input_table):
         df = input_table.to_pandas()
 
-        target_col = df[self.seasdiffParams.target_column]
+        target_col = df[self.diff_params.target_column]
 
-        target_col_new = target_col.diff(periods = self.seasdiffParams.lags)
+        target_col_new = target_col.diff(periods = self.diff_params.lags)
 
-        df[self.seasdiffParams.target_column + "(" + (str(-self.seasdiffParams.lags)) + ")"] = target_col_new
+        df[self.diff_params.target_column + "(" + (str(-self.diff_params.lags)) + ")"] = target_col_new
 
         return knext.Table.from_pandas(df)        
 

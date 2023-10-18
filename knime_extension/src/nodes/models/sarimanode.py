@@ -96,7 +96,7 @@ class SarimaForcaster:
         #check if log transformation is enabled
         if (self.sarima_params.learner_params.natural_log):
 
-            val = kutil.check_negative_values(regression_target)
+            val = kutil.count_negative_values(regression_target)
 
             #raise error if target column contains negative values
             if (val > 0):
