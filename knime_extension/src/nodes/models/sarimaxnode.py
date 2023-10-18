@@ -78,7 +78,14 @@ class SXForecaster():
             configure_context, self.sarimax_params.predictor_params.exog_column_forecasts, input_schema_2, kutil.is_numeric
         )
 
-        return  None 
+        forecast_schema = knext.Column(knext.double(), "Forecasts")
+        insamp_res_schema = knext.Schema([knext.double(), knext.double()],
+                                    ["Residuals","In-Samples"])
+        model_summary_schema = knext.Column(knext.double(), "value")
+        binary_model_schema = knext.BinaryPortObjectSpec("sarimax.model")
+       
+
+        return  forecast_schema, insamp_res_schema, model_summary_schema, binary_model_schema 
     
     def execute(self, exec_context: knext.ExecutionContext, input_1, input_2):
         df = input_1.to_pandas()
