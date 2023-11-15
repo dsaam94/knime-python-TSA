@@ -46,7 +46,9 @@ class SeasonalDifferencingNode:
 
         return None
 
-    def execute(self, exec_context: knext.ExecutionContext, input_table):
+    def execute(
+        self, exec_context: knext.ExecutionContext, input_table
+    ):  # NOSONAR exec_context is necessary
         df = input_table.to_pandas()
 
         target_col = df[self.diff_params.target_column]
