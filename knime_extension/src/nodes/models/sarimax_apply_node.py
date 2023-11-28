@@ -1,7 +1,7 @@
 import logging
 import knime.extension as knext
 from util import utils as kutil
-from ..configs.models.sarimax import SarimaxForecasterParms
+from ..configs.models.sarimax_apply import SarimaxForecasterParms
 import pandas as pd
 import numpy as np
 from statsmodels.tsa.statespace.sarimax import SARIMAX
@@ -25,14 +25,14 @@ __category = knext.category(
 
 
 @knext.node(
-    name="SARIMAX Forecaster",
+    name="SARIMAX Forecaster (Apply)",
     node_type=knext.NodeType.LEARNER,
     icon_path="icons/icon.png",
     category=__category,
-    id="sarimax",
+    id="sarimax_apply",
 )
-@knext.input_table(
-    name="Input Data", description="Table contains numeric target column to fit SARIMA"
+@knext.input_binary(
+    name="Input Data", description="Model input for SARIMAX", id="sarimax.model"
 )
 @knext.input_table(name="Exogenous Input", description="Link to exogenous variable")
 @knext.output_table(
@@ -45,13 +45,10 @@ __category = knext.category(
     name="Model Summary",
     description="Table containing coefficient statistics and other criterion.",
 )
-@knext.output_binary(
-    name="Trained model", description="Model for SARIMAX", id="sarimax.model"
-)
 class SXForecaster:
     """
 
-    This node has a descriptionTrains a Seasonal AutoRegressive Integrated Moving Average eXogenous(SARIMAX ) model. SARIMA models capture temporal structures in time series data in the following components:
+    This node trains a Seasonal AutoRegressive Integrated Moving Average eXogenous(SARIMAX ) model. SARIMA models capture temporal structures in time series data in the following components:
     - AR: Relationship between the current observation and a number (p) of lagged observations
     - I: Degree (d) of differencing required to make the time series stationary
     - MA: Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors
@@ -64,33 +61,12 @@ class SXForecaster:
 
     sarimax_params = SarimaxForecasterParms()
 
-    # target column for modelling
-    input_column = knext.ColumnParameter(
-        label="Target Column",
-        description="The numeric column to fit the model.",
-        port_index=0,
-        column_filter=kutil.is_numeric,
-    )
-
     def configure(
         self,
         configure_context: knext.ConfigurationContext,
-        input_schema_1,
+        input_model,
         input_schema_2,
     ):
-        # set exog column for training
-        self.sarimax_params.learner_params.exog_column = kutil.column_exists_or_preset(
-            configure_context,
-            self.sarimax_params.learner_params.exog_column,
-            input_schema_1,
-            kutil.is_numeric,
-        )
-
-        # set endogenous/target variable
-        self.input_column = kutil.column_exists_or_preset(
-            configure_context, self.input_column, input_schema_1, kutil.is_numeric
-        )
-
         # set exog input for forecasting
         self.sarimax_params.predictor_params.exog_column_forecasts = (
             kutil.column_exists_or_preset(
@@ -106,47 +82,23 @@ class SXForecaster:
             [knext.double(), knext.double()], ["Residuals", "In-Samples"]
         )
         model_summary_schema = knext.Column(knext.double(), "value")
-        binary_model_schema = knext.BinaryPortObjectSpec("sarimax.model")
 
         return (
             forecast_schema,
             insamp_res_schema,
             model_summary_schema,
-            binary_model_schema,
         )
 
     def execute(self, exec_context: knext.ExecutionContext, input_1, input_2):
-        df = input_1.to_pandas()
         exog_df = input_2.to_pandas()
-
-        exog_var = df[self.sarimax_params.learner_params.exog_column]
 
         exog_var_forecasts = exog_df[
             self.sarimax_params.predictor_params.exog_column_forecasts
         ]
 
-        regression_target = df[self.input_column]
+        model_fit = pickle.loads(input_1)
+        self._exec_validate(exog_var_forecasts)
 
-        self._exec_validate(regression_target, exog_var, exog_var_forecasts)
-
-        # model initializytion and training
-        model = SARIMAX(
-            regression_target,
-            order=(
-                self.sarimax_params.learner_params.ar_order_param,
-                self.sarimax_params.learner_params.i_order_param,
-                self.sarimax_params.learner_params.i_order_param,
-            ),
-            seasonal_order=(
-                self.sarimax_params.learner_params.seasoanal_ar_order_param,
-                self.sarimax_params.learner_params.seasoanal_i_order_param,
-                self.sarimax_params.learner_params.seasoanal_ma_order_param,
-                self.sarimax_params.learner_params.seasonal_period_param,
-            ),
-            exog=exog_var,
-        )
-        # maxiters set to default
-        model_fit = model.fit()
         residuals = model_fit.resid
 
         # in-samples
@@ -157,24 +109,12 @@ class SXForecaster:
             )
         )
 
-        # check if log transformation is enabled
-        if self.sarimax_params.learner_params.natural_log:
-            val = kutil.check_negative_values(regression_target)
-
-            # raise error if target column contains negative values
-            if val > 0:
-                raise knext.InvalidParametersError(
-                    f" There are '{val}' non-positive values in the target column."
-                )
-
-            regression_target = np.log(regression_target)
-
         # combine residuals and is-samples to as part of one dataframe
         in_samps_residuals = pd.concat([residuals, in_samples], axis=1)
         in_samps_residuals.columns = ["Residuals", "In-Samples"]
 
         # reverse log transformation for in-sample values
-        if self.sarimax_params.learner_params.natural_log:
+        if self.sarimax_params.predictor_params.natural_log:
             in_samples = np.exp(in_samples)
 
         # make out-of-sample forecasts
@@ -184,72 +124,20 @@ class SXForecaster:
         ).to_frame(name="Forecasts")
 
         # reverse log transformation for forecasts
-        if self.sarimax_params.learner_params.natural_log:
+        if self.sarimax_params.predictor_params.natural_log:
             forecasts = np.exp(forecasts)
 
         # populate model coefficients
         model_summary = self.model_summary(model_fit)
 
-        model_binary = pickle.dumps(model_fit)
-
         return (
             knext.Table.from_pandas(forecasts),
             knext.Table.from_pandas(in_samps_residuals),
             knext.Table.from_pandas(model_summary),
-            bytes(model_binary),
         )
 
     # function to perform validation on dataframe within execution context
-    def _exec_validate(self, target, exog_train, exog_forecast):
-        ########################################################
-        # TARGET COLUMN CHECK
-        ########################################################
-
-        # check for missing values first
-        if kutil.check_missing_values(target):
-            missing_count = kutil.count_missing_values(target)
-            raise knext.InvalidParametersError(
-                f"""There are {missing_count}  missing values in the target column."""
-            )
-
-        # validate enough values are being provided to train the SARIMA model
-        set_val = set(
-            [
-                # p
-                self.sarimax_params.learner_params.ar_order_param,
-                # s *P
-                self.sarimax_params.learner_params.seasonal_period_param
-                * self.sarimax_params.learner_params.seasoanal_ar_order_param,
-                # s*Q
-                self.sarimax_params.learner_params.seasonal_period_param
-                * self.sarimax_params.learner_params.seasoanal_ma_order_param,
-            ]
-        )
-
-        num_of_rows = kutil.number_of_rows(target)
-
-        if num_of_rows < max(set_val):
-            raise knext.InvalidParametersError(
-                f"""Number of rows must be at least {max(set_val)} to train the model """
-            )
-
-        ########################################################
-        # EXOGENOUS COLUMN CHECK
-        ########################################################
-
-        # check for missing values first
-        if kutil.check_missing_values(exog_train):
-            missing_count_exog = kutil.count_missing_values(exog_train)
-            raise knext.InvalidParametersError(
-                f"""There are {missing_count_exog} number of missing values in the exogenous (training) column."""
-            )
-
-        # Length of target column and exogenous column must be the same
-        if kutil.number_of_rows(exog_train) != kutil.number_of_rows(target):
-            raise knext.InvalidParametersError(
-                "Length of target column and Exogenous column should be the same."
-            )
-
+    def _exec_validate(self, exog_forecast):
         ########################################################
         # EXOGENOUS FORECASTS COLUMN CHECK
         ########################################################

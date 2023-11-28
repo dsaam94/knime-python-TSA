@@ -12,7 +12,7 @@ category = knext.category(
     icon="icons/icon.png",
 )
 
-from nodes.models import sarimanode, sarimaxnode, sarima_apply_node
+from nodes.models import sarimanode, sarimaxnode, sarima_apply_node, sarimax_apply_node
 from nodes.preprocessing import (
     aggreg_gran_node,
     differencing_node,
