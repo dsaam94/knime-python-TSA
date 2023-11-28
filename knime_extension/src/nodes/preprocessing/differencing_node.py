@@ -44,7 +44,15 @@ class SeasonalDifferencingNode:
             kutil.is_numeric,
         )
 
-        return None
+        return input_schema.append(
+            knext.Column(
+                knext.double(),
+                self.diff_params.target_column
+                + "("
+                + (str(-self.diff_params.lags))
+                + ")",
+            )
+        )
 
     def execute(
         self, exec_context: knext.ExecutionContext, input_table
