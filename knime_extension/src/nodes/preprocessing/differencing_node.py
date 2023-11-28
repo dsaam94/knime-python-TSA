@@ -36,7 +36,9 @@ class SeasonalDifferencingNode:
 
     diff_params = SeasonalDifferencingParams()
 
-    def configure(self, configure_context: knext.ConfigurationContext, input_schema):
+    def configure(
+        self, configure_context: knext.ConfigurationContext, input_schema: knext.Schema
+    ):
         self.diff_params.target_column = kutil.column_exists_or_preset(
             configure_context,
             self.diff_params.target_column,
@@ -44,9 +46,14 @@ class SeasonalDifferencingNode:
             kutil.is_numeric,
         )
 
+        # get the data type of the selected column
+        ktype = (
+            input_schema[[self.diff_params.target_column]].delegate._columns[0].ktype
+        )
+
         return input_schema.append(
             knext.Column(
-                knext.double(),
+                ktype,
                 self.diff_params.target_column
                 + "("
                 + (str(-self.diff_params.lags))

@@ -2,14 +2,14 @@ import knime.extension as knext
 from util import utils as kutil
 
 
-
 #########################################################################
 # Timestamp Alignment
 #########################################################################
 
+
 @knext.parameter_group(label="Timestamp Alignment Parameters")
 class TimeStampAlignmentParams:
-        # discuss timestamps with Corey
+    # discuss timestamps with Corey
     class Period(knext.EnumParameterOptions):
         YEAR = (
             "Year",
@@ -77,20 +77,20 @@ class TimeStampAlignmentParams:
         @classmethod
         def get_default(cls):
             return cls.HOUR
-        
+
     datetime_col = knext.ColumnParameter(
-        label = "Date&Time Column"
-        , description="The target date&time column"
-        , port_index = 0
-        , column_filter= kutil.is_type_timestamp
-        )
+        label="Date&Time Column",
+        description="The target date&time column",
+        port_index=0,
+        column_filter=kutil.is_type_timestamp,
+    )
 
     replace_original = knext.BoolParameter(
-        label = "Replace timestamp column "
-        , description="A boolean check to replace the input timestamp column with processed one or not."
-        , default_value= True
-        )
-    
+        label="Replace timestamp column ",
+        description="A boolean check to replace the input timestamp column with processed one or not.",
+        default_value=True,
+    )
+
     period = knext.EnumParameter(
         label="Period",
         description="Select time period for alignment",

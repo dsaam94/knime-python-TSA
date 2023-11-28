@@ -3,7 +3,6 @@ from util import utils as kutil
 import pandas as pd
 
 
-
 #########################################################################
 # Aggregation Granularity
 #########################################################################
@@ -11,7 +10,6 @@ import pandas as pd
 
 @knext.parameter_group(label="Aggregation Granularity Parameters")
 class AggregationGranularityParams:
-
     # discuss timestamps with Corey
     class TimeGranularityOpts(knext.EnumParameterOptions):
         YEAR = (
@@ -87,7 +85,7 @@ class AggregationGranularityParams:
 
     class AggregationDictionary(knext.EnumParameterOptions):
         """
-        This class is the enumeration of the selected aggregation from client-side and 
+        This class is the enumeration of the selected aggregation from client-side and
         the corresponding input for the aggregate application at Pandas end.
         """
 
@@ -126,16 +124,16 @@ class AggregationGranularityParams:
             return cls.MEAN
 
     datetime_col = knext.ColumnParameter(
-        label = "Date&Time_ Column"
-        , description="The target date&time column"
-        , port_index = 0
-        , column_filter= kutil.is_type_timestamp
-        )
+        label="Date&Time Column",
+        description="The target date&time column",
+        port_index=0,
+        column_filter=kutil.is_type_timestamp,
+    )
     aggregation_column = knext.ColumnParameter(
-        label = "Aggregation Column"
-        , description="Column with regression column to apply aggregation on"
-        , port_index=0
-        , column_filter=kutil.is_numeric
+        label="Aggregation Column",
+        description="Column with regression column to apply aggregation on",
+        port_index=0,
+        column_filter=kutil.is_numeric,
     )
 
     time_granularity = knext.EnumParameter(
@@ -146,8 +144,8 @@ class AggregationGranularityParams:
     )
 
     aggregation_methods = knext.EnumParameter(
-        label = "Aggregation Method"
-        , description = "Select aggregation method"
-        , default_value = AggregationMethods.get_default().name
-        , enum = AggregationMethods
+        label="Aggregation Method",
+        description="Select aggregation method",
+        default_value=AggregationMethods.get_default().name,
+        enum=AggregationMethods,
     )

@@ -3,6 +3,7 @@ import knime.extension as knext
 from util import utils as kutil
 import pandas as pd
 from ..configs.preprocessing.timealign import TimeStampAlignmentParams
+import datetime
 
 NEW_COLUMN = " (New)"
 
@@ -40,7 +41,9 @@ class TimestampAlignmentNode:
 
     ts_align_params = TimeStampAlignmentParams()
 
-    def configure(self, configure_context: knext.ConfigurationContext, input_schema):
+    def configure(
+        self, configure_context: knext.ConfigurationContext, input_schema: knext.Schema
+    ):
         self.ts_align_params.datetime_col = kutil.column_exists_or_preset(
             configure_context,
             self.ts_align_params.datetime_col,
@@ -48,7 +51,30 @@ class TimestampAlignmentNode:
             kutil.is_type_timestamp,
         )
 
-        return None
+        date_ktype = (
+            input_schema[[self.ts_align_params.datetime_col]].delegate._columns[0].ktype
+        )
+
+        LOGGER.warn(date_ktype)
+
+        # Need index of input col
+        index = 0
+        for _ in input_schema:
+            if input_schema.column_names[index] != self.ts_align_params.datetime_col:
+                continue
+            index = index + 1
+
+        LOGGER.warning(f"index is {index}")
+        if not self.ts_align_params.replace_original:
+            return input_schema.insert(
+                knext.Column(
+                    date_ktype,
+                    self.ts_align_params.datetime_col + NEW_COLUMN,
+                ),
+                index,
+            )
+        else:
+            return input_schema
 
     def execute(self, exec_context: knext.ExecutionContext, input_table):
         df = input_table.to_pandas()

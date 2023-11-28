@@ -76,6 +76,10 @@ class AggregationGranularity:
         configure_context: knext.ConfigurationContext,
         input_schema_1: knext.Schema,
     ):
+        # TODO Specify the output schema which depends on the selected parameters
+
+        # TODO for you Ali: delete everything else below
+
         # set date&time column by default
         self.aggreg_params.datetime_col = kutil.column_exists_or_preset(
             configure_context,
@@ -92,61 +96,7 @@ class AggregationGranularity:
             kutil.is_numeric,
         )
 
-        # what do we want to return?
-        # two columns, one timestamp, one being whatever the agregation produces
-        # lala = self.aggreg_params.time_granularity.lower()
-        # first_type = None
-        # match lala:
-        # if lala == year then first_type = kutil.TYPE_TIME
-        # if lala == month then first_type = kutil.TYPE_DATE
-
         return None
-
-        # first_column_schema = knext.Column(
-        #     ktype=kutil.TYPE_DATE_TIME, name=self.aggreg_params.datetime_col
-        # )
-        # # I want to get the type of the aggregation_column (whether it is double or int...)
-        # second_column_schema = input_schema_1._select_columns(
-        #     self.aggreg_params.aggregation_column
-        # )
-        # LOGGER.warn(first_column_schema.ktype)
-        # output_schema = knext.Schema(
-        #     [self.return_specs_first(), self.return_specs_second()],
-        #     [first_column_schema.name, second_column_schema.name],
-        # )
-        # return output_schema
-
-    # def return_specs_first(self):
-    #     if self.aggreg_params.time_granularity.lower() in [
-    #         self.aggreg_params.TimeGranularityOpts.YEAR.name.lower(),
-    #         self.aggreg_params.TimeGranularityOpts.QUARTER.name.lower(),
-    #         self.aggreg_params.TimeGranularityOpts.MONTH.name.lower(),
-    #         self.aggreg_params.TimeGranularityOpts.WEEK.name.lower(),
-    #     ]:
-    #         return knext.double()
-    #     elif (
-    #         self.aggreg_params.time_granularity.lower()
-    #         == self.aggreg_params.TimeGranularityOpts.DAY.name.lower()
-    #     ):
-    #         return kutil.TYPE_DATE
-    #     elif self.aggreg_params.time_granularity.lower() in [
-    #         self.aggreg_params.TimeGranularityOpts.HOUR.name.lower(),
-    #         self.aggreg_params.TimeGranularityOpts.MINUTE.name.lower(),
-    #         self.aggreg_params.TimeGranularityOpts.SECOND.name.lower(),
-    #     ]:
-    #         return kutil.TYPE_DATE_TIME
-
-    # def return_specs_second(self):
-    #     if self.aggreg_params.aggregation_column.ktype == knext.double():
-    #         return knext.double()
-    #     else:
-    #         if self.aggreg_params.aggregation_methods.lower() in [
-    #             self.aggreg_params.AggregationDictionary.MEAN.name.lower(),
-    #             self.aggreg_params.AggregationDictionary.VARIANCE.name.lower(),
-    #         ]:
-    #             return knext.double()
-    #         else:
-    #             knext.int64()
 
     def execute(self, exec_context: knext.ExecutionContext, input_1):
         df = input_1.to_pandas()
