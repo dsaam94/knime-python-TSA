@@ -28,51 +28,44 @@ __category = knext.category(
     id="sarima",
 )
 @knext.input_table(
-    name="Input Data", description="Table contains numeric target column to fit SARIMA"
+    name="Input Data",
+    description="Table containing training data for fitting the SARIMA model, must contain a numeric target column with no missing values to be used for forecasting.",
 )
 @knext.output_table(
-    name="Forecast", description="Forecasted values and their standard errors"
+    name="Forecast",
+    description="Table containing forecasts for the configured column, the first value will be 1 timestamp ahead of the final training value used.",
 )
 @knext.output_table(
-    name="In-sample & Residuals", description="Residuals from the training model"
+    name="In-sample & Residuals",
+    description="In sample model prediction values and residuals i.e. difference between observed value and the predicted output.",
 )
 @knext.output_table(
     name="Model Summary",
-    description="Table containing coefficient statistics and other criterion.",
+    description="Table containing fitted model coefficients, variance of residuals (sigma2), and several model metrics along with their standard errors.",
 )
-@knext.output_binary(name="Model", description="Model for SARIMA", id="sarima.model")
+@knext.output_binary(
+    name="Model",
+    description="Pickled model object that can be used by the SARIMA (Apply) node to generate different forecast lengths without refitting the model",
+    id="sarima.model",
+)
 class SarimaForcaster:
     """
+    Trains and generates a forecast with a (S)ARIMA Model
 
-    This node trains a Seasonal AutoRegressive Integrated Moving Average (SARIMA) model. SARIMA models capture temporal structures in time series data in the following components:
-    - AR: Relationship between the current observation and a number (p) of lagged observations
-    - I: Degree (d) of differencing required to make the time series stationary
-    - MA: Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors
 
-    *Seasonal versions of these operate similarly with lag intervals equal to the seasonal period (S).
+    # SARIMA Model Training
 
-    Additionally, coefficent statistics and residuals are provided as table outputs.
+    Trains and generates a forecast using a Seasonal AutoRegressive Integrated Moving Average (SARIMA) model. The SARIMA models captures temporal structures in time series data in the following components:
 
-    Model Summary metrics:
-    RMSE (Root Mean Square Error)
-    MAE (Mean Absolute Error)
-    MAPE (Mean Absolute Percentage Error)
-    *will be missing if zeroes in target
-    R2 (Coefficient of Determination)
-    Log Likelihood
-    AIC (Akaike Information Criterion)
-    BIC (Bayesian Information Criterion)
+    - **AR (AutoRegressive):** Relationship between the current observation and a number (p) of lagged observations.
+    - **I (Integrated):** Degree (d) of differencing required to make the time series stationary.
+    - **MA (Moving Average):** Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors.
+
+    *Seasonal versions of these components operate similarly, with lag intervals equal to the seasonal period (S).*
+
     """
 
     sarima_params = SarimaForecasterParms()
-
-    # target column for modelling
-    input_column = knext.ColumnParameter(
-        label="Target Column",
-        description="The numeric column to fit the model.",
-        port_index=0,
-        column_filter=kutil.is_numeric,
-    )
 
     # merge in-samples and residuals (In-Samples & Residuals)
     def configure(self, configure_context, input_schema_1):
@@ -85,7 +78,7 @@ class SarimaForcaster:
             and self.sarima_params.predictor_params.dynamic_check
         ):
             configure_context.set_warning(
-                "Enabling dynamic predictions with log transformation can cause invalid predictions."
+                "Enabling dynamic predictions on log transformed target column can generate invalid output."
             )
 
         forecast_schema = knext.Column(knext.double(), "Forecasts")
@@ -170,6 +163,7 @@ class SarimaForcaster:
         # populate model coefficients
         model_summary = self.model_summary(model_fit)
 
+        # create model pickle
         model_binary = pickle.dumps(model_fit)
 
         return (
@@ -193,6 +187,8 @@ class SarimaForcaster:
             [
                 # p
                 self.sarima_params.learner_params.ar_order_param,
+                # q
+                self.sarima_params.learner_params.ma_order_param,
                 # S * P
                 self.sarima_params.learner_params.seasonal_period_param
                 * self.sarima_params.learner_params.seasoanal_ar_order_param,
@@ -206,7 +202,7 @@ class SarimaForcaster:
 
         if num_of_rows < max(set_val):
             raise knext.InvalidParametersError(
-                f"""Number of rows must be at least "{max(set_val)}" to train the model """
+                f"""Number of rows must be greater than maximum lag: "{max(set_val)}" to train the model. The maximum lag is the max of p, q, s*P, and s*Q."""
             )
 
     def model_summary(self, model):
