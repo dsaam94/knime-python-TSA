@@ -32,45 +32,53 @@ __category = knext.category(
     id="sarimax",
 )
 @knext.input_table(
-    name="Input Data", description="Table contains numeric target column to fit SARIMA"
+    name="Input Data",
+    description="Table containing training data for fitting the SARIMAX model, must contain a numeric target column with no missing values to be used for forecasting. Additionally, this table must also contain the exogenous column to be used for training the SARIMAX model.",
 )
-@knext.input_table(name="Exogenous Input", description="Link to exogenous variable")
-@knext.output_table(
-    name="Forecast", description="Forecasted values and their standard errors"
+@knext.input_table(
+    name="Exogenous Input",
+    description="Table containing exogenous column for forecasting on the SARIMAX model. It must contain a numeric column with no missing values.",
 )
 @knext.output_table(
-    name="In-sample & Residuals", description="Residuals from the training model"
+    name="Forecast",
+    description="Table containing forecasts for the configured column, the first value will be 1 timestamp ahead of the final training value used. ",
+)
+@knext.output_table(
+    name="In-sample & Residuals",
+    description="In sample model prediction values and residuals i.e. difference between observed value and the predicted output.",
 )
 @knext.output_table(
     name="Model Summary",
-    description="Table containing coefficient statistics and other criterion.",
+    description="Table containing fitted model coefficients, variance of residuals (sigma2), and several model metrics along with their standard errors.",
 )
 @knext.output_binary(
-    name="Trained model", description="Model for SARIMAX", id="sarimax.model"
+    name="Trained model",
+    description="Pickled model object that can be used by the SARIMAX (Apply) node to generate different forecast lengths without refitting the model.",
+    id="sarimax.model",
 )
 class SXForecaster:
     """
+    Trains and generates a forecast with a (S)ARIMAX Model.
 
-    This node has a descriptionTrains a Seasonal AutoRegressive Integrated Moving Average eXogenous(SARIMAX ) model. SARIMA models capture temporal structures in time series data in the following components:
-    - AR: Relationship between the current observation and a number (p) of lagged observations
-    - I: Degree (d) of differencing required to make the time series stationary
-    - MA: Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors
+    # SARIMAX Model Training
 
-    *Seasonal versions of these operate similarly with lag intervals equal to the seasonal period (S).
+    Trains and generates a forecast using a Seasonal AutoRegressive Integrated Moving Average with eXogenous (SARIMAX) terms model. The SARIMAX models captures temporal structures in time series data in the following components:
 
-    Additionally, coefficent statistics and residuals are provided as table outputs.
+    - **AR (AutoRegressive):** Relationship between the current observation and a number (p) of lagged observations.
+
+    - **I (Integrated):** Degree (d) of differencing required to make the time series stationary.
+
+    - **MA (Moving Average):** Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors.
+
+    *Seasonal versions of these components operate similarly, with lag intervals equal to the seasonal period (S).*
+
+    Additionally, this node requires an *exogenous* column that externally influences the model. This column must be provided both for model training and forecasting. However, ensure that the number of rows in the exogenous variable to be used for forecasts must be equal to the number of forecasts to be made.
+    Ensure that neither of the selected columns in the node configuration dialogue must contain a missing value.
+
 
     """
 
     sarimax_params = SarimaxForecasterParms()
-
-    # target column for modelling
-    input_column = knext.ColumnParameter(
-        label="Target Column",
-        description="The numeric column to fit the model.",
-        port_index=0,
-        column_filter=kutil.is_numeric,
-    )
 
     def configure(
         self,
@@ -241,13 +249,13 @@ class SXForecaster:
         if kutil.check_missing_values(exog_train):
             missing_count_exog = kutil.count_missing_values(exog_train)
             raise knext.InvalidParametersError(
-                f"""There are {missing_count_exog} number of missing values in the exogenous (training) column."""
+                f"""There are {missing_count_exog} missing values in the exogenous column selected for training."""
             )
 
         # Length of target column and exogenous column must be the same
         if kutil.number_of_rows(exog_train) != kutil.number_of_rows(target):
             raise knext.InvalidParametersError(
-                "Length of target column and Exogenous column should be the same."
+                "Length of target column and exogenous column should be the same."
             )
 
         ########################################################
@@ -258,7 +266,7 @@ class SXForecaster:
         if kutil.check_missing_values(exog_forecast):
             missing_count_exog_fore = kutil.count_missing_values(exog_forecast)
             raise knext.InvalidParametersError(
-                f"""There are "{missing_count_exog_fore}" number of missing values in the exogenous (prediction) column."""
+                f"""There are {missing_count_exog_fore} missing values in the exogenous column selected for forecasting."""
             )
 
         # check that the number of rows for exogenous input relating to forecasts and number of forecasts to be made should be equal
@@ -267,7 +275,7 @@ class SXForecaster:
             != self.sarimax_params.predictor_params.number_of_forecasts
         ):
             raise knext.InvalidParametersError(
-                "The number of forecasts should be equal to the length of the exogenous input for forecasts."
+                "The number of forecasts should be equal to the number of rows in the exogenous input of forecasts."
             )
 
     def model_summary(self, model):

@@ -3,16 +3,15 @@ import knime.extension as knext
 from util import utils as kutil
 
 
-
 ##################################################################
 # """
 # SARIMAX paramter settings with validations
 # """
 ##################################################################
 
+
 @knext.parameter_group(label="Sarimax Model Parameters")
 class SXLearnerParams(_LearnerParams):
-
 
     """
 
@@ -24,18 +23,18 @@ class SXLearnerParams(_LearnerParams):
 
     This attribute is the column selection of the exogenous variable.
 
-    """   
+    """
+
     exog_column = knext.ColumnParameter(
-        label = "Exogenous Column"
-        , description="The exogenous column for training "
-        , port_index = 0
-        , column_filter=kutil.is_numeric
-        )
-    
+        label="Exogenous Column",
+        description="Table containing exogenous column for the SARIMAX model, must contain a numeric column with no missing values.",
+        port_index=0,
+        column_filter=kutil.is_numeric,
+    )
+
 
 @knext.parameter_group(label="Sarimax Predictor Parameters")
 class SXPredictorParams(_PredictorParams):
-
 
     """
 
@@ -45,31 +44,36 @@ class SXPredictorParams(_PredictorParams):
 
     An additional column parameter is initialized in this child class by the name, "exog_column_forecasts".
 
-    This attribute is the column selection of the exogenous variable for the forecasts. Note that number of forecasts should be equal 
+    This attribute is the column selection of the exogenous variable for the forecasts. Note that number of forecasts should be equal
     to the number of rows in this new exogenous column.
-
-    """       
-    
-    exog_column_forecasts = knext.ColumnParameter(
-        label = "Exogenous Column for Forecasting"
-        , description="The exogenous column for forecasting "
-        , port_index = 1
-        , column_filter=kutil.is_numeric
-        )
-
-              
-
-
-@knext.parameter_group(label = "Sarimax Forecaster Parameters")
-class SarimaxForecasterParms():
 
     """
 
-    SARIMAX Forecaster nodes parameters put together in one complete group called "Sarimax Forecaster Parameters"
+    exog_column_forecasts = knext.ColumnParameter(
+        label="Exogenous Column for Forecasting",
+        description="Table containing exogenous column for making forecasts on the SARIMAX model, must contain a numeric column with no missing values and of length equal to the number of forecasts to be made.",
+        port_index=1,
+        column_filter=kutil.is_numeric,
+    )
 
-    """    
+
+@knext.parameter_group(label="Sarimax Forecaster Settings")
+class SarimaxForecasterParms:
+
+    """
+
+    SARIMAX settings to configure the parameters for the model.
+
+
+    """
+
+    # target column for modelling
+    input_column = knext.ColumnParameter(
+        label="Target Column",
+        description="Table containing training data for fitting the SARIMAX model, must contain a numeric target column with no missing values to be used for forecasting.",
+        port_index=0,
+        column_filter=kutil.is_numeric,
+    )
+
     learner_params = SXLearnerParams()
     predictor_params = SXPredictorParams()
-
-
-    
