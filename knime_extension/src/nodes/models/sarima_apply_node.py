@@ -4,7 +4,6 @@ from util import utils as kutil
 from ..configs.models.sarima_apply import SarimaForecasterParms
 import pandas as pd
 import numpy as np
-from statsmodels.tsa.statespace.sarimax import SARIMAX
 import pickle
 
 LOGGER = logging.getLogger(__name__)
@@ -29,40 +28,28 @@ __category = knext.category(
 )
 @knext.input_binary(
     name="Model Input",
-    description="Binary input of the trained SARIMA model",
+    description="Trained SARIMA model",
     id="sarima.model",
 )
 @knext.output_table(
-    name="Forecast", description="Forecasted values and their standard errors"
+    name="Forecast",
+    description="Table containing forecasts for the configured column, the first value will be 1 timestamp ahead of the final training value used.",
 )
 @knext.output_table(
-    name="In-sample & Residuals", description="Residuals from the training model"
+    name="In-sample & Residuals",
+    description="In sample model prediction values and residuals i.e. difference between observed value and the predicted output.",
 )
 @knext.output_table(
     name="Model Summary",
-    description="Table containing coefficient statistics and other criterion.",
+    description="Table containing fitted model coefficients, variance of residuals (sigma2), and several model metrics along with their standard errors.",
 )
 class SarimaForcasterApply:
     """
+    This node  generates forecasts with a (S)ARIMA Model.
 
-    This node trains a Seasonal AutoRegressive Integrated Moving Average (SARIMA) model. SARIMA models capture temporal structures in time series data in the following components:
-    - AR: Relationship between the current observation and a number (p) of lagged observations
-    - I: Degree (d) of differencing required to make the time series stationary
-    - MA: Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors
+    # SARIMA Forecaster (Apply)
 
-    *Seasonal versions of these operate similarly with lag intervals equal to the seasonal period (S).
-
-    Additionally, coefficent statistics and residuals are provided as table outputs.
-
-    Model Summary metrics:
-    RMSE (Root Mean Square Error)
-    MAE (Mean Absolute Error)
-    MAPE (Mean Absolute Percentage Error)
-    *will be missing if zeroes in target
-    R2 (Coefficient of Determination)
-    Log Likelihood
-    AIC (Akaike Information Criterion)
-    BIC (Bayesian Information Criterion)
+    Based on a trained SARIMA-model given at the model input port of this node, the forecasts values are computed.
     """
 
     sarima_params = SarimaForecasterParms()

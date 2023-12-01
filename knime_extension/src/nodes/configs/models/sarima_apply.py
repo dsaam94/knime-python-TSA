@@ -16,16 +16,16 @@ class SPredictorApplyParams(_PredictorParams):
 
     natural_log = knext.BoolParameter(
         label="Reverse Log",
-        description="Check this option only if the target column was logged during training the model.",
+        description="Optionally, use this option to reverse the transformation applied on the target column during the model training.",
         default_value=False,
     )
 
 
-@knext.parameter_group(label="Sarima Forecaster (Apply) Parameters")
+@knext.parameter_group(label="Sarima Forecaster (Apply) Settings")
 class SarimaForecasterParms:
     """
 
-    SARIMA Forecaster nodes parameters put together in one complete group called "Sarima Forecaster Parameters"
+    SARIMA Predictor settings to configure the predictions to be made by the model.
 
     """
 

@@ -104,7 +104,7 @@ class _PredictorParams:
 
     number_of_forecasts = knext.IntParameter(
         label="Forecast",
-        description="Forecasts of the given time series h period ahead of the training data.",
+        description="Forecasts of the given time series *h* period ahead of the training data.",
         default_value=1,
         min_value=1,
     )
@@ -117,6 +117,4 @@ class _PredictorParams:
 
     def validate(self, values):
         if values["number_of_forecasts"] < 1:
-            raise ValueError(
-                "Forecast must be at least one timestamp ahead of the training data."
-            )
+            raise ValueError("At least one forecast should be made by the model.")
