@@ -37,7 +37,7 @@ __category = knext.category(
 )
 @knext.output_table(
     name="In-sample & Residuals",
-    description="In sample model prediction values and residuals i.e. difference between observed value and the predicted output.",
+    description="In-sample model prediction values and residuals i.e. difference between observed value and the predicted output.",
 )
 @knext.output_table(
     name="Model Summary",
