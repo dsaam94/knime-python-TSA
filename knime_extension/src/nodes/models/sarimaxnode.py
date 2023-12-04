@@ -37,7 +37,7 @@ __category = knext.category(
 )
 @knext.input_table(
     name="Exogenous Input",
-    description="Table containing exogenous column for forecasting on the SARIMAX model. It must contain a numeric column with no missing values.",
+    description="Table containing the exogenous column for forecasting on the SARIMAX model. It must contain a numeric column with no missing values.",
 )
 @knext.output_table(
     name="Forecast",

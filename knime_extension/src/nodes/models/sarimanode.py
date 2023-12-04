@@ -71,8 +71,11 @@ class SarimaForcaster:
 
     # merge in-samples and residuals (In-Samples & Residuals)
     def configure(self, configure_context, input_schema_1):
-        self.input_column = kutil.column_exists_or_preset(
-            configure_context, self.input_column, input_schema_1, kutil.is_numeric
+        self.sarima_params.input_column = kutil.column_exists_or_preset(
+            configure_context,
+            self.sarima_params.input_column,
+            input_schema_1,
+            kutil.is_numeric,
         )
 
         if (
@@ -99,7 +102,7 @@ class SarimaForcaster:
 
     def execute(self, exec_context: knext.ExecutionContext, input_1):
         df = input_1.to_pandas()
-        regression_target = df[self.input_column]
+        regression_target = df[self.sarima_params.input_column]
 
         # check if log transformation is enabled
         if self.sarima_params.learner_params.natural_log:
