@@ -45,7 +45,7 @@ __category = knext.category(
 )
 class SarimaForcasterApply:
     """
-    This node  generates forecasts with a (S)ARIMA Model.
+    This node generates forecasts with a (S)ARIMA Model.
 
     # SARIMA Forecaster (Apply)
 
@@ -61,7 +61,7 @@ class SarimaForcasterApply:
             and self.sarima_params.predictor_params.dynamic_check
         ):
             configure_context.set_warning(
-                "Enabling dynamic predictions with log transformation can cause invalid predictions."
+                "Enabling dynamic predictions with log transformation can create invalid predictions."
             )
 
         forecast_schema = knext.Column(knext.double(), "Forecasts")

@@ -79,7 +79,7 @@ class _LearnerParams:
             values["ar_order_param"] >= values["seasonal_period_param"]
         ):
             raise knext.InvalidParametersError(
-                "Autoregressive terms overlap with seasonal autogressive terms, p should be less than s when using seasonal auto regressive terms"
+                "Autoregressive terms overlap with seasonal autogressive terms, p should be less than S when using seasonal auto regressive terms"
             )
 
         # handle Q > 0 and q >= s
@@ -87,7 +87,7 @@ class _LearnerParams:
             values["ma_order_param"] >= values["seasonal_period_param"]
         ):
             raise knext.InvalidParametersError(
-                "Moving average terms overlap with seasonal moving average terms, q should be less than s when using seasonal moving average terms."
+                "Moving average terms overlap with seasonal moving average terms, q should be less than S when using seasonal moving average terms."
             )
 
 
@@ -112,7 +112,7 @@ class _PredictorParams:
     dynamic_check = knext.BoolParameter(
         label="Dynamic",
         description="Check this box to use in-sample prediction as lagged values. Otherwise use true values.",
-        default_value=True,
+        default_value=False,
     )
 
     def validate(self, values):

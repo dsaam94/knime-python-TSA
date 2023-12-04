@@ -95,8 +95,11 @@ class SXForecaster:
         )
 
         # set endogenous/target variable
-        self.input_column = kutil.column_exists_or_preset(
-            configure_context, self.input_column, input_schema_1, kutil.is_numeric
+        self.sarimax_params.input_column = kutil.column_exists_or_preset(
+            configure_context,
+            self.sarimax_params.input_column,
+            input_schema_1,
+            kutil.is_numeric,
         )
 
         # set exog input for forecasting
@@ -133,7 +136,7 @@ class SXForecaster:
             self.sarimax_params.predictor_params.exog_column_forecasts
         ]
 
-        regression_target = df[self.input_column]
+        regression_target = df[self.sarimax_params.input_column]
 
         self._exec_validate(regression_target, exog_var, exog_var_forecasts)
 
@@ -238,7 +241,7 @@ class SXForecaster:
 
         if num_of_rows < max(set_val):
             raise knext.InvalidParametersError(
-                f"""Number of rows must be at least {max(set_val)} to train the model """
+                f"""Number of rows must be greater than maximum lag: "{max(set_val)}" to train the model. The maximum lag is the max of p, q, s*P, and s*Q."""
             )
 
         ########################################################
@@ -275,7 +278,7 @@ class SXForecaster:
             != self.sarimax_params.predictor_params.number_of_forecasts
         ):
             raise knext.InvalidParametersError(
-                "The number of forecasts should be equal to the number of rows in the exogenous input of forecasts."
+                "The number of forecasts should be equal to the number of rows in the exogenous input for forecasts."
             )
 
     def model_summary(self, model):
