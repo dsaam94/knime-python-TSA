@@ -32,7 +32,7 @@ __category = knext.category(
     id="sarimax_apply",
 )
 @knext.input_binary(
-    name="Input Data", description="Model input for SARIMAX", id="sarimax.model"
+    name="Input Data", description="Trained SARIMAX model.", id="sarimax.model"
 )
 @knext.input_table(name="Exogenous Input", description="Link to exogenous variable")
 @knext.output_table(
@@ -47,16 +47,9 @@ __category = knext.category(
 )
 class SXForecaster:
     """
+    This node  generates forecasts with a (S)ARIMAX Mode
 
-    This node trains a Seasonal AutoRegressive Integrated Moving Average eXogenous(SARIMAX ) model. SARIMA models capture temporal structures in time series data in the following components:
-    - AR: Relationship between the current observation and a number (p) of lagged observations
-    - I: Degree (d) of differencing required to make the time series stationary
-    - MA: Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors
-
-    *Seasonal versions of these operate similarly with lag intervals equal to the seasonal period (S).
-
-    Additionally, coefficent statistics and residuals are provided as table outputs.
-
+    Based on a trained SARIMAX model given at the model input port of this node, the forecast values are computed. This apply node can also be used to update exogenous variable data for forecasting.
     """
 
     sarimax_params = SarimaxForecasterParms()
@@ -146,7 +139,7 @@ class SXForecaster:
         if kutil.check_missing_values(exog_forecast):
             missing_count_exog_fore = kutil.count_missing_values(exog_forecast)
             raise knext.InvalidParametersError(
-                f"""There are "{missing_count_exog_fore}" number of missing values in the exogenous (prediction) column."""
+                f"""There are {missing_count_exog_fore} missing values in the exogenous column selected for forecasting."""
             )
 
         # check that the number of rows for exogenous input relating to forecasts and number of forecasts to be made should be equal
