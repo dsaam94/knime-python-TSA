@@ -33,7 +33,7 @@ __category = knext.category(
 )
 @knext.output_table(
     name="Forecast",
-    description="Table containing forecasts for the configured column, the first value will be 1 timestamp ahead of the final training value used.",
+    description="Table containing forecasts for the configured column, the first value will be one timestamp ahead of the final training value used.",
 )
 @knext.output_table(
     name="In-sample & Residuals",
@@ -49,7 +49,7 @@ class SarimaForcasterApply:
 
     # SARIMA Forecaster (Apply)
 
-    Based on a trained SARIMA-model given at the model input port of this node, the forecasts values are computed.
+    Based on a trained SARIMA model given at the model input port of this node, the forecasts values are computed.
     """
 
     sarima_params = SarimaForecasterParms()
