@@ -58,7 +58,9 @@ class SarimaForcaster:
     Trains and generates a forecast using a Seasonal AutoRegressive Integrated Moving Average (SARIMA) model. The SARIMA models captures temporal structures in time series data in the following components:
 
     - **AR (AutoRegressive):** Relationship between the current observation and a number (p) of lagged observations.
+
     - **I (Integrated):** Degree (d) of differencing required to make the time series stationary.
+
     - **MA (Moving Average):** Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors.
 
     *Seasonal versions of these components operate similarly, with lag intervals equal to the seasonal period (S).*
