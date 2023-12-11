@@ -9,7 +9,10 @@ from util import utils as kutil
 
 @knext.parameter_group(label="Timestamp Alignment Parameters")
 class TimeStampAlignmentParams:
-    # discuss timestamps with Corey
+    """
+    Settings for configuring Timestamp Alignment node.
+    """
+
     class Period(knext.EnumParameterOptions):
         YEAR = (
             "Year",
@@ -79,21 +82,21 @@ class TimeStampAlignmentParams:
             return cls.HOUR
 
     datetime_col = knext.ColumnParameter(
-        label="Date&Time Column",
-        description="The target date&time column",
+        label="Timestamp Column",
+        description="Timestamp column containing missing timestamps.",
         port_index=0,
         column_filter=kutil.is_type_timestamp,
     )
 
     replace_original = knext.BoolParameter(
-        label="Replace timestamp column ",
-        description="A boolean check to replace the input timestamp column with processed one or not.",
+        label="Replace Timestamp Column",
+        description="Check this box in order to preserve the original timestamp column in the input table.",
         default_value=True,
     )
 
     period = knext.EnumParameter(
         label="Period",
-        description="Select time period for alignment",
+        description="Select time granularity to fill the timestampes. Each timestamp filled will be in the 1 frequency interval for the selected granularity.",
         default_value=Period.get_default().name,
         enum=Period,
     )

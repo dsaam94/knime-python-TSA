@@ -14,7 +14,6 @@ __category = knext.category(
     level_id="proc",
     name="Preprocessing",
     description="Nodes for pre-processing date&time.",
-    # starting at the root folder of the extension_module parameter in the knime.yml file
     icon="icons/icon.png",
 )
 
@@ -28,15 +27,17 @@ __category = knext.category(
 )
 @knext.input_table(
     name="Input Data",
-    description="Table contains the date&time column to be diffeenced",
+    description="Table containing the timestamp column to fill in for the missing timestamps based on the time granularity selected.",
 )
 @knext.output_table(
-    name="Aligned Timestamp",
-    description="Output the column with missing timestamps in the range",
+    name="Output Data",
+    description="Table output the column with missing timestamps in the given range.",
 )
 class TimestampAlignmentNode:
     """
-    This component aligns timestamp with the selected granularity
+    Checks a table for non-existent timestamps and generates rows with missing values for them.
+
+    Select a timestamp column and a time granularity. The node will verify that a record exists in your table for each value at that granularity, for example if you select hours it will check for 01:00, 02:00, 03:00… if a timestamp is not found it will be inserted and missing values generated for the remaining columns. Use this in combination with the missing value node to correct missing time series data.
     """
 
     ts_align_params = TimeStampAlignmentParams()
@@ -63,8 +64,7 @@ class TimestampAlignmentNode:
             if input_schema.column_names[index] != self.ts_align_params.datetime_col:
                 continue
             index = index + 1
-
-        LOGGER.warning(f"index is {index}")
+        # if option is checked, insert new column in the index next to the selected column
         if not self.ts_align_params.replace_original:
             return input_schema.insert(
                 knext.Column(
@@ -186,6 +186,9 @@ class TimestampAlignmentNode:
         return modified_dates
 
     def __align_time(self, timestamps: pd.Series, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Create a new column in the existing dataframe, by doing left join on the processed column with the table.
+        """
         __duplicate = "_Dup12345"
 
         # find set difference from available timestamps and missing timestamps
