@@ -17,7 +17,6 @@ __category = knext.category(
     level_id="analysis",
     name="Analysis",
     description="Nodes for analysis for time series application",
-    # starting at the root folder of the extension_module parameter in the knime.yml file
     icon="icons/icon.png",
 )
 
@@ -41,6 +40,12 @@ __category = knext.category(
     description="Plots for investigating autocorrelations.",
 )
 class AutoCorrNode:
+    """
+    Create ACF and PACF diagnostic plots to visualize stationarity and autocorrelations in a time series column.
+
+    This node will generate both an Autocorrelation Function (ACF) plot and a Partial Auotcorrelation Function (PACF) plot. The ACF plot can be used to visualize correlations between the time series and lagged copies of itself, use this to identify seasonalities in your data. The PACF plot is a modified version of the ACF that attempts to account for and remove serial correlation, use this to identify key lag values to include in (S)ARIMA models.
+    """
+
     analysis_params = AutocorrParams()
 
     def configure(self, configure_context: knext.ConfigurationContext, input_schema):
@@ -138,7 +143,7 @@ class AutoCorrNode:
 
     def _exec_validate(self, target):
         """
-        This function validates target regression column at Pandas end
+        This function validates selected numeric column at Panda's end
         """
         ########################################################
         # TARGET COLUMN CHECK

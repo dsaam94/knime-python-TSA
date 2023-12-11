@@ -124,7 +124,7 @@ class AggregationGranularityParams:
 
     datetime_col = knext.ColumnParameter(
         label="Timestamp Column",
-        description="The timestamp column to perform time granularity.",
+        description="The timestamp column to perform selected time granularity.",
         port_index=0,
         column_filter=kutil.is_type_timestamp,
     )

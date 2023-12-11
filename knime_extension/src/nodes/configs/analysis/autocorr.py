@@ -9,7 +9,7 @@ LOGGER = logging.getLogger(__name__)
 class AutocorrParams:
     target_col = knext.ColumnParameter(
         label="Value Column",
-        description="The target value to inspect",
+        description="The numeric column value to inspect autocorrelations.",
         port_index=0,
         column_filter=kutil.is_numeric,
     )
