@@ -35,7 +35,7 @@ class SeasonalDifferencingNode:
     """
     Differences a Column by subtracting from each row the value of a prior row.
 
-    Select a lag value for differencing to represent the number of rows back to use when applying the differencing calculation. For example a lag value of 1 will subtract from each row the value of the previous row. A value of 2 will subtract from each row the value of the row before the previous. It is based on Panda’s Series Differencing method.
+    Select a lag value for differencing to represent the number of rows back to use when applying the differencing calculation. For example a lag value of 1 will subtract from each row the value of the previous row. A value of 2 will subtract from each row the value of the row before the previous. It is based on [Panda’s Series Differencing method](https://pandas.pydata.org/docs/reference/api/pandas.Series.diff.html).
 
     """
 

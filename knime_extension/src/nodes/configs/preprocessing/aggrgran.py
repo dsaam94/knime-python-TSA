@@ -10,7 +10,6 @@ import pandas as pd
 
 @knext.parameter_group(label="Aggregation Granularity Parameters")
 class AggregationGranularityParams:
-    # discuss timestamps with Corey
     class TimeGranularityOpts(knext.EnumParameterOptions):
         YEAR = (
             "Year",
@@ -124,28 +123,28 @@ class AggregationGranularityParams:
             return cls.MEAN
 
     datetime_col = knext.ColumnParameter(
-        label="Date&Time Column",
-        description="The target date&time column",
+        label="Timestamp Column",
+        description="The timestamp column to perform time granularity.",
         port_index=0,
         column_filter=kutil.is_type_timestamp,
     )
     aggregation_column = knext.ColumnParameter(
         label="Aggregation Column",
-        description="Column with regression column to apply aggregation on",
+        description="The numeric column to apply selected aggregation method.",
         port_index=0,
         column_filter=kutil.is_numeric,
     )
 
     time_granularity = knext.EnumParameter(
         label="Time Granularity",
-        description="Select time granularity for aggregation",
+        description="Options to select expected granularity in output timestamp column.",
         default_value=TimeGranularityOpts.get_default().name,
         enum=TimeGranularityOpts,
     )
 
     aggregation_methods = knext.EnumParameter(
         label="Aggregation Method",
-        description="Select aggregation method",
+        description="Options to select method of aggregation to be applied on the selected numeric column.",
         default_value=AggregationMethods.get_default().name,
         enum=AggregationMethods,
     )

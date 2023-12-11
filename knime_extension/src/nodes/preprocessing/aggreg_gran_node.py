@@ -11,8 +11,7 @@ __category = knext.category(
     path="/community/ts",
     level_id="proc",
     name="Preprocessing",
-    description="Nodes for pre-processing date&time.",
-    # starting at the root folder of the extension_module parameter in the knime.yml file
+    description="Nodes for pre-processing timestamp data.",
     icon="icons/icon.png",
 )
 
@@ -26,47 +25,18 @@ __category = knext.category(
 )
 @knext.input_table(
     name="Input Data",
-    description="Table contains the date&time column and intended regression column to apply aggregation method.",
+    description="Table containing the timestamp column and the numeric column to apply the selected aggregation method",
 )
 @knext.output_table(
-    name="Aggregations",
-    description="Aggregated output with modified date&time and selected granularity.",
+    name="Aggregated Output",
+    description="Table output containing the timestamp based on selected granularity and the aggregated numerical column.",
 )
 class AggregationGranularity:
     """
+    Aggregate data based on a timestamp column and selected granularity: minute, hour, day, week, month, quarter, year.
 
-    This component aggregates values in a selected numeric or string column by timestamps extracted from a column of type Date&Time. The granularity of the timestamps and the aggregation method are defined by the user.
-
-    If the selected granularity indicates time, the extracted timestamps will have the same column type as the input column. For other granularities (days, months, etc.), the timestamps will appear in a column of type Local Date.
-
-    For Quarter and Week granularity, the first date of the corresponding period (quarter or week) will be returned as a column of Local Date type in the output table.
-
-    Note: For Legacy Date&Time column please convert it first to Date&Time using the Legacy Date&Time to Date&Time node.
-
-    The available granularities are:
-    Years
-    Quarter
-    Months
-    Week
-    Days
-    Hours
-    Minutes
-    Seconds
-
-    The supported Date&Time types are:
-        Local Date Time
-        Zoned Date Time
-        Local Date
-        Local Time
-
-    The available aggregation methods are:
-        Mean
-        Mode
-        Min
-        Max
-        Sum
-        Variance
-        Count
+    The aggregation granularity node works a lot like group by node except to define your grouping, select a timestamp column and a level of granularity to define your groups. Then numeric columns can be aggregated to: mode, min, max, sum, var, count, or mean.
+    *mode will return the first mode in the event of a tie.*
     """
 
     aggreg_params = AggregationGranularityParams()
@@ -77,8 +47,6 @@ class AggregationGranularity:
         input_schema_1: knext.Schema,
     ):
         # TODO Specify the output schema which depends on the selected parameters
-
-        # TODO for you Ali: delete everything else below
 
         # set date&time column by default
         self.aggreg_params.datetime_col = kutil.column_exists_or_preset(
@@ -98,12 +66,13 @@ class AggregationGranularity:
 
         return None
 
-    def execute(self, exec_context: knext.ExecutionContext, input_1):
+    def execute(self, exec_context: knext.ExecutionContext, input_1: knext.Schema):
         df = input_1.to_pandas()
 
         date_time_col_orig = df[self.aggreg_params.datetime_col]
         agg_col = df[self.aggreg_params.aggregation_column]
 
+        # get timestamp data type
         kn_date_time_format = kutil.get_type_timestamp(str(date_time_col_orig.dtype))
 
         # if condition to handle zoned date&time
@@ -133,7 +102,7 @@ class AggregationGranularity:
         # raise exception if selected time granularity does not exists in the input timestamp column
         if selected_time_granularity not in df_time.columns:
             raise knext.InvalidParametersError(
-                f"""Input timestamp column does not contain {selected_time_granularity} field."""
+                f"""Selected timestamp column does not contain {selected_time_granularity} field."""
             )
 
         # modify the input timestamp as per the time_gran selected. This modifies the timestamp column depending on the granularity selected
@@ -161,8 +130,8 @@ class AggregationGranularity:
         self, time_gran: str, kn_date_time_type: str, df_time: pd.DataFrame
     ):
         """
-        This function modifies the input timestamp column according to the type of granularity selected. So for instance if the selected time granularity is "Quarter" then
-        the next higher time value against quarter will be year. Hence only year will be returned.
+        This function modifies the input timestamp column according to the type of granularity selected. For instance, if the selected time granularity is "Quarter" then
+        the next higher time value against quarter will be "Year". Hence only "Year" will be returned.
         """
 
         df = df_time.copy()
@@ -182,7 +151,7 @@ class AggregationGranularity:
                 self.aggreg_params.datetime_col
             ].astype(np.int32)
 
-        # rounnd input timestamp to nearest date
+        # set input timestamp to date
         elif time_gran == self.aggreg_params.TimeGranularityOpts.DAY.name.lower():
             date = date.dt.date
             df[self.aggreg_params.datetime_col] = date
@@ -210,6 +179,10 @@ class AggregationGranularity:
     def __floor_time(
         self, kn_date_time_type: str, time_gran: str, date: pd.Series
     ) -> pd.Series:
+        """
+        This function is use to floor the timestamp against the selected time granularity.
+        """
+
         if kn_date_time_type == kutil.DEF_TIME_LABEL:
             date = pd.to_datetime(date, format=kutil.TIME_FORMAT)
             date = date.dt.floor(time_gran)
@@ -259,7 +232,7 @@ class AggregationGranularity:
 
     def __append_time_zone(self, date_col: pd.DataFrame, zoned: pd.Series):
         """
-        This function reassignes time zones to date&time column. This function is only called if input date&time column containes time zone.
+        This function re-assignes time zones to date&time column. This function is only called if input date&time column containes time zone.
         """
 
         date_col_internal = date_col

@@ -31,7 +31,7 @@ __category = knext.category(
 )
 @knext.output_table(
     name="Output Data",
-    description="Table output the column with missing timestamps in the given range.",
+    description="Table output with the column with missing timestamps in the given range.",
 )
 class TimestampAlignmentNode:
     """

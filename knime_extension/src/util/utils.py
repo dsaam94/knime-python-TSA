@@ -45,9 +45,8 @@ DATE_FORMAT = "%Y-%m-%d"
 TIME_FORMAT = "%H:%M:%S"
 
 
-
- # Filter columns visible in the column_param for numeric ones
-def is_numeric(column: knext.Column) -> bool: 
+# Filter columns visible in the column_param for numeric ones
+def is_numeric(column: knext.Column) -> bool:
     """
     Checks if column is numeric e.g. int, long or double.
     @return: True if Column is numeric
@@ -75,8 +74,7 @@ def is_datetime(column: knext.Column) -> bool:
     return __is_type_x(column, LOCAL_DATE_TIME_VALUE)
 
 
-
-def is_time(column: knext.Column)-> bool:
+def is_time(column: knext.Column) -> bool:
     """
     Checks if a column is of type Time only.
     @return: True if selected column has only time.
@@ -84,14 +82,12 @@ def is_time(column: knext.Column)-> bool:
     return __is_type_x(column, LOCAL_TIME_VALUE)
 
 
-
-def is_date(column: knext.Column)-> bool:
+def is_date(column: knext.Column) -> bool:
     """
     Checks if a column is of type date only.
     @return: True if selected column has date only.
     """
     return __is_type_x(column, LOCAL_DATE_VALUE)
-
 
 
 def boolean_or(*functions):
@@ -107,7 +103,6 @@ def boolean_or(*functions):
 
 
 def is_type_timestamp(column: knext.Column):
-
     """
     This function checks on all the supported timestamp columns supported in KNIME.
     Note that legacy date&time types are not supported.
@@ -129,81 +124,75 @@ def __is_type_x(column: knext.Column, type: str) -> bool:
         and type in column.ktype.logical_type
     )
 
+
 # this method will check the input type for timestamp
 def check_type(column: str, schema: knext.Schema):
-    
     """
     This function returns the name of the factory data type for relevant timestamp column.
     @return: Name of factory data type for timestamp
     """
 
     selected_col = schema[column]
-    type_detected =  selected_col.ktype.logical_type.split(".")
+    type_detected = selected_col.ktype.logical_type.split(".")
     return type_detected[len(type_detected) - 1].replace('"}', "")
+
 
 ############################################
 # Date&Time helper methods
 ############################################
 
 
-
 def convert_timestamp(value):
     """
     This function converts knime compatible datetime values
     into pandas Timestamp.
-    @return: Panda's Timestamp converted date&time value 
+    @return: Panda's Timestamp converted date&time value
     """
     return pd.Timestamp(value)
 
 
 def extract_zone(value):
-
     """
     This function extracts the time zone from each timestamp value in the pandas timmestamp column.
-    @return: timezone of Timestamp 
-    """    
+    @return: timezone of Timestamp
+    """
     return value.tz
 
 
 def localize_timezone(value, zone):
-
     """
     This function updates the Pandas Timestamp value with the time zone. If "None" is passed timezone will be removed from
     timestamp returning a timezone naive value.
     @return: assigns timezone to timestamp.
 
-    """   
+    """
     return value.tz_localize(zone)
 
 
 def time_granularity_list() -> list:
-
     """
-    This function returns list of possible time fields relevant to only Time type values. 
+    This function returns list of possible time fields relevant to only Time type values.
     @return: list of item fields in Time
-    """     
+    """
     return [
         "hour",
         "minute",
         "second",
-        #not supported yet
+        # not supported yet
         "millisecond",
-        "microsecond"
+        "microsecond",
     ]
 
 
-
-def cast_to_related_type(value_type:str, column:pd.Series):
+def cast_to_related_type(value_type: str, column: pd.Series):
     """
     This function converts the KNIME's date&time column to Pandas native date&time column. The format for the Pandas datetime
-    is selected based on the respective KNIME's date&time logical type.
-    @return: Pandas datetime Series and corresponding name of the Knime's date&time factory datatype
+    is selected based on the respective KNIME's date&time factory type.
+    @return: Pandas datetime Series and corresponding name of the Knime's date&time factory type.
     """
 
     # parse date time with zones
-    if(DEF_ZONED_DATE_LABEL == value_type):
-
- 
+    if DEF_ZONED_DATE_LABEL == value_type:
         column = column.apply(convert_timestamp)
 
         zone_offset = column.apply(extract_zone)
@@ -215,36 +204,34 @@ def cast_to_related_type(value_type:str, column:pd.Series):
         return s_dateimezone, DEF_ZONED_DATE_LABEL, zone_offset
 
     # parse dates only
-    elif(DEF_DATE_LABEL == value_type):
-
-        s_date = pd.to_datetime(column, format = DATE_FORMAT)
+    elif DEF_DATE_LABEL == value_type:
+        s_date = pd.to_datetime(column, format=DATE_FORMAT)
 
         return s_date, DEF_DATE_LABEL
-    
+
     # cast only time objects
-    elif(DEF_TIME_LABEL == value_type):
-        s_time = pd.to_datetime(column, format = TIME_FORMAT)
+    elif DEF_TIME_LABEL == value_type:
+        s_time = pd.to_datetime(column, format=TIME_FORMAT)
 
         return s_time.dt.time, DEF_TIME_LABEL
 
-
-    #parse date & time
-    elif( DEF_DATE_TIME_LABEL == value_type):
-        s_datetime = pd.to_datetime(column, format = DATE_TIME_FORMAT)
+    # parse date & time
+    elif DEF_DATE_TIME_LABEL == value_type:
+        s_datetime = pd.to_datetime(column, format=DATE_TIME_FORMAT)
 
         return s_datetime, DEF_DATE_TIME_LABEL
-    
 
 
-def extract_time_fields(date_time_col:pd.Series, date_time_format:str, series_name:str) -> pd.DataFrame:
+def extract_time_fields(
+    date_time_col: pd.Series, date_time_format: str, series_name: str
+) -> pd.DataFrame:
     """
     This function exracts the timestamp fields in seperate columns.
     @return: Pandas datafram with timestamp column and relevant date&time fields.
     """
-    
 
-    if(date_time_format == DEF_ZONED_DATE_LABEL):
-        df = pd.to_datetime(date_time_col, format = ZONED_DATE_TIME_FORMAT).to_frame()
+    if date_time_format == DEF_ZONED_DATE_LABEL:
+        df = pd.to_datetime(date_time_col, format=ZONED_DATE_TIME_FORMAT).to_frame()
 
         df["zone"] = str(date_time_col.dt.tz)
         df["year"] = df[series_name].dt.year
@@ -256,11 +243,10 @@ def extract_time_fields(date_time_col:pd.Series, date_time_format:str, series_na
         df["minute"] = df[series_name].dt.minute
         df["second"] = df[series_name].dt.second
 
-        return  df
+        return df
 
-    elif(date_time_format == DEF_DATE_LABEL):
-
-        df = pd.to_datetime(date_time_col, format = DATE_FORMAT).to_frame()
+    elif date_time_format == DEF_DATE_LABEL:
+        df = pd.to_datetime(date_time_col, format=DATE_FORMAT).to_frame()
 
         df["year"] = df[series_name].dt.year
         df["quarter"] = df[series_name].dt.quarter
@@ -272,22 +258,20 @@ def extract_time_fields(date_time_col:pd.Series, date_time_format:str, series_na
 
         return df
 
-    elif(date_time_format == DEF_TIME_LABEL):
-
-        df = pd.to_datetime(date_time_col, format = TIME_FORMAT).to_frame()
+    elif date_time_format == DEF_TIME_LABEL:
+        df = pd.to_datetime(date_time_col, format=TIME_FORMAT).to_frame()
 
         df["hour"] = df[series_name].dt.hour
         df["minute"] = df[series_name].dt.minute
         df["second"] = df[series_name].dt.second
 
-        #ensure to do this in the end
+        # ensure to do this in the end
         df[series_name] = df[series_name].dt.time
 
         return df
-    
-    elif(date_time_format == DEF_DATE_TIME_LABEL):
 
-        df = pd.to_datetime(date_time_col, format = DATE_TIME_FORMAT).to_frame()
+    elif date_time_format == DEF_DATE_TIME_LABEL:
+        df = pd.to_datetime(date_time_col, format=DATE_TIME_FORMAT).to_frame()
 
         df["year"] = df[series_name].dt.year
         df["quarter"] = df[series_name].dt.quarter
@@ -301,27 +285,21 @@ def extract_time_fields(date_time_col:pd.Series, date_time_format:str, series_na
         return df
 
 
-
-
-
-
 def get_type_timestamp(value_type):
     """
-    This function parses the complete name of KNIME's date&time factory method and returns the actual name of the factory data type.
+    This function parses the complete value of KNIME's date&time factory type and returns the actual name of the factory data type.
     """
-    typs = [ZONED_DATE_TIME_ZONE_VALUE
-           , LOCAL_TIME_VALUE
-           , LOCAL_DATE_VALUE
-           ,LOCAL_DATE_TIME_VALUE
-           ]
+    typs = [
+        ZONED_DATE_TIME_ZONE_VALUE,
+        LOCAL_TIME_VALUE,
+        LOCAL_DATE_VALUE,
+        LOCAL_DATE_TIME_VALUE,
+    ]
 
     for typ in typs:
         if str(value_type).__contains__(typ):
-            type_detected =  typ.split(".")
+            type_detected = typ.split(".")
             return type_detected[len(type_detected) - 1]
-
-
-
 
 
 ############################################
@@ -375,31 +353,32 @@ def __check_col_and_type(
 # Generic pandas dataframe/series helper function
 ############################################
 
-def check_missing_values(column:pd.Series) -> bool :
+
+def check_missing_values(column: pd.Series) -> bool:
     """
     This function checks for missing values in the Pandas Series.
     @return: True is missing values exist in column
     """
     return column.hasnans
 
-def count_missing_values(column:pd.Series) -> int:
+
+def count_missing_values(column: pd.Series) -> int:
     """
     This function counts the number of missing values in the Pandas Series.
     @return: sum of boolean 1s if missing value exists.
     """
     return column.isnull().sum()
 
-def number_of_rows(df:pd.Series) -> int:
 
+def number_of_rows(df: pd.Series) -> int:
     """
     This function returns the number of rows in the dataframe.
     @return: numerical value, denoting length of Pandas Series.
-    """    
+    """
     return len(df.index)
 
-def count_negative_values(column: pd.Series) -> int:
 
+def count_negative_values(column: pd.Series) -> int:
     total_neg = (column <= 0).sum()
 
     return total_neg
-
