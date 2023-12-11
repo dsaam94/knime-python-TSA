@@ -7,20 +7,18 @@ from util import utils as kutil
 #########################################################################
 
 
-@knext.parameter_group(label="Seasonal Differencing Parameters")
+@knext.parameter_group(label="Differencing Parameters")
 class SeasonalDifferencingParams:
-
     target_column = knext.ColumnParameter(
-        label = "Target Column"
-        , description="Target column to difference on"
-        , port_index=0
-        , column_filter=kutil.is_numeric
+        label="Target Column",
+        description="Select a numeric column to apply differencing on.",
+        port_index=0,
+        column_filter=kutil.is_numeric,
     )
 
     lags = knext.IntParameter(
-        label = "Lag"
-        , description = "Difference given column based on specified number of lags"
-        , default_value = 1
-        , min_value=1
-        )
-
+        label="Lag",
+        description="Periods to shift for calculating difference in the numerical column.",
+        default_value=1,
+        min_value=1,
+    )

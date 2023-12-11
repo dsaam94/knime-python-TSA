@@ -82,7 +82,6 @@ class TimestampAlignmentNode:
         date_time_col_orig = df[self.ts_align_params.datetime_col]
 
         kn_date_time_format = kutil.get_type_timestamp(str(date_time_col_orig.dtype))
-        # LOGGER.warn(kn_date_time_format)
 
         # if condition to handle zoned date&time
         if kn_date_time_format == kutil.DEF_ZONED_DATE_LABEL:

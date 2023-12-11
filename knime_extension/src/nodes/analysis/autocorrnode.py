@@ -30,15 +30,15 @@ __category = knext.category(
     id="autocorrelation_analysis",
 )
 @knext.input_table(
-    name="Input Table", description="Table with exogenous variable to inspect."
+    name="Input Table", description="Table containing the numeric column to analyse."
 )
 @knext.output_table(
-    name="Lags & Correlation Values",
-    description="Aggregated output with modified date&time and selected granularity.",
+    name="Lags & Plot Values",
+    description="Table representation of ACF and PACF plots.",
 )
 @knext.output_view(
     name="ACF & PACF Plot",
-    description="Plot for identifying best parameters for (seosonality, q).",
+    description="Plots for investigating autocorrelations.",
 )
 class AutoCorrNode:
     analysis_params = AutocorrParams()
@@ -148,11 +148,11 @@ class AutoCorrNode:
         if kutil.check_missing_values(target):
             missing_count = kutil.count_missing_values(target)
             raise knext.InvalidParametersError(
-                f"""There are "{missing_count}" number of missing values in the target column."""
+                f"""There are {missing_count} missing values in the selected column."""
             )
 
         # check maximum lags cannot be more than the number of rows
         if self.analysis_params.max_lag >= kutil.number_of_rows(target):
             raise knext.InvalidParametersError(
-                "Maximum number of lags cannot be greater than or equal to the number of rows"
+                "Maximum number of lags cannot be greater than or equal to the number of rows."
             )

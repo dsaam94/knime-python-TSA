@@ -12,7 +12,6 @@ __category = knext.category(
     level_id="proc",
     name="Preprocessing",
     description="Nodes for pre-processing date&time.",
-    # starting at the root folder of the extension_module parameter in the knime.yml file
     icon="icons/icon.png",
 )
 
@@ -26,12 +25,18 @@ __category = knext.category(
 )
 @knext.input_table(
     name="Input Data",
-    description="Table contains the regression column to be diffeenced",
+    description="Table containing the numeric column to apply differencing.",
 )
-@knext.output_table(name="Aggregations", description="Output the column having ")
+@knext.output_table(
+    name="Input Data with Differenced Column",
+    description="Output table containing the differenced column.",
+)
 class SeasonalDifferencingNode:
     """
-    yet to be done
+    Differences a Column by subtracting from each row the value of a prior row.
+
+    Select a lag value for differencing to represent the number of rows back to use when applying the differencing calculation. For example a lag value of 1 will subtract from each row the value of the previous row. A value of 2 will subtract from each row the value of the row before the previous. It is based on Panda’s Series Differencing method.
+
     """
 
     diff_params = SeasonalDifferencingParams()
