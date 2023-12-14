@@ -93,6 +93,7 @@ class AutoCorrNode:
             regression_target, nlags=self.analysis_params.max_lag, alpha=__alpha
         )
 
+        # compute mid-point of upper and lower bounds for acf
         margin_error_acf = 0.5 * (acf_confint[:, 1] - acf_confint[:, 0])
 
         margin_error_acf = pd.DataFrame(
@@ -105,7 +106,7 @@ class AutoCorrNode:
         pacf_x, pacf_confint = pacf(
             regression_target, nlags=self.analysis_params.max_lag, alpha=__alpha
         )
-
+        # compute mid-point of upper and lower bounds for pacf
         margin_error_pacf = 0.5 * (pacf_confint[:, 1] - pacf_confint[:, 0])
 
         margin_error_pacf = pd.DataFrame(
