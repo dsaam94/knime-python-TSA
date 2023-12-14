@@ -136,8 +136,9 @@ class AggregationGranularity:
 
         df = df_time.copy()
 
+        date = df[self.aggreg_params.datetime_col].astype(np.datetime64)
+
         # check if granularity level is
-        date = df[self.aggreg_params.datetime_col]
         if time_gran in (
             self.aggreg_params.TimeGranularityOpts.YEAR.name.lower(),
             self.aggreg_params.TimeGranularityOpts.QUARTER.name.lower(),
@@ -153,7 +154,9 @@ class AggregationGranularity:
 
         # set input timestamp to date
         elif time_gran == self.aggreg_params.TimeGranularityOpts.DAY.name.lower():
+            # if pd.api.types.is_datetime64_any_dtype(date):
             date = date.dt.date
+            # date = date
             df[self.aggreg_params.datetime_col] = date
 
         # round datetime to nearest hour

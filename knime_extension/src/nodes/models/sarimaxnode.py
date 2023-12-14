@@ -140,7 +140,7 @@ class SXForecaster:
 
         self._exec_validate(regression_target, exog_var, exog_var_forecasts)
 
-        # model initializytion and training
+        # model initialization and training
         model = SARIMAX(
             regression_target,
             order=(

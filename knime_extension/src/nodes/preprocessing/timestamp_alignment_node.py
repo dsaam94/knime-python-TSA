@@ -56,8 +56,6 @@ class TimestampAlignmentNode:
             input_schema[[self.ts_align_params.datetime_col]].delegate._columns[0].ktype
         )
 
-        LOGGER.warn(date_ktype)
-
         # Need index of input col
         index = 0
         for _ in input_schema:
