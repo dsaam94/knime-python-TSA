@@ -12,20 +12,12 @@ import matplotlib.pyplot as plt
 
 LOGGER = logging.getLogger(__name__)
 
-__category = knext.category(
-    path="/community/ts",
-    level_id="analysis",
-    name="Analysis",
-    description="Nodes for analysis for time series application",
-    icon="icons/icon.png",
-)
-
 
 @knext.node(
     name="Autocorrelation Analysis",
     node_type=knext.NodeType.VISUALIZER,
-    icon_path="icons/icon.png",
-    category=__category,
+    icon_path="icons/Analysis/Autocorrelation_Analysis.png",
+    category=kutil.category_analytics,
     id="autocorrelation_analysis",
 )
 @knext.input_table(

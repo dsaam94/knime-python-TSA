@@ -9,26 +9,12 @@ import pickle
 
 LOGGER = logging.getLogger(__name__)
 
-__category = knext.category(
-    path="/community/ts",
-    level_id="models",
-    name="Models",
-    description="Nodes for modelling Time Series",
-    # starting at the root folder of the extension_module parameter in the knime.yml file
-    icon="icons/icon.png",
-)
-
-
-####################################################################################################
-# Replicating above node to incorporate Exogenous variable
-####################################################################################################
-
 
 @knext.node(
     name="SARIMAX Forecaster",
     node_type=knext.NodeType.LEARNER,
-    icon_path="icons/icon.png",
-    category=__category,
+    icon_path="icons/models/SARIMAX_Forecaster.png",
+    category=kutil.category_models,
     id="sarimax",
 )
 @knext.input_table(

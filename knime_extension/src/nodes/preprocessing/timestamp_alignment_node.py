@@ -9,20 +9,12 @@ NEW_COLUMN = " (New)"
 
 LOGGER = logging.getLogger(__name__)
 
-__category = knext.category(
-    path="/community/ts",
-    level_id="proc",
-    name="Preprocessing",
-    description="Nodes for pre-processing date&time.",
-    icon="icons/icon.png",
-)
-
 
 @knext.node(
     name="Timestamp Alignment",
     node_type=knext.NodeType.MANIPULATOR,
-    icon_path="icons/icon.png",
-    category=__category,
+    icon_path="icons/preprocessing/Timestamp_Alignment.png",
+    category=kutil.category_processsing,
     id="timestamp_alignment",
 )
 @knext.input_table(

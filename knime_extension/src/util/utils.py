@@ -45,6 +45,35 @@ DATE_FORMAT = "%Y-%m-%d"
 TIME_FORMAT = "%H:%M:%S"
 
 
+############################################
+# Categories
+############################################
+
+category_processsing = knext.category(
+    path="/community/ts",
+    level_id="proc",
+    name="Preprocessing",
+    description="Nodes for pre-processing timestamp data.",
+    icon="icons/Pre-processing.png",
+)
+
+category_models = knext.category(
+    path="/community/ts",
+    level_id="models",
+    name="Models",
+    description="Nodes for modelling time series",
+    icon="icons/Models.png",
+)
+
+category_analytics = knext.category(
+    path="/community/ts",
+    level_id="analysis",
+    name="Analysis",
+    description="Nodes for analysis for time series application",
+    icon="icons/Analytics.png",
+)
+
+
 # Filter columns visible in the column_param for numeric ones
 def is_numeric(column: knext.Column) -> bool:
     """

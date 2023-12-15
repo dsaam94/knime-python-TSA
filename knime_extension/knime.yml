@@ -2,10 +2,10 @@ name: time_series # Will be concatenated with the group_id to an ID
 author: Ali Asghar Marvi & Corey Weisinger
 bundled_env_name: org_knime_pythonscripting # we re-use the bundled Python environment
 extension_module: src/ts_ext # The .py Python module containing the nodes of your extension
-description: Time Series Python Extension # Human readable bundle name / description
+description: Time Series Extension # Human readable bundle name / description
 long_description: Replacing Time Series Components in KNIME .
 group_id: org.knime
-version: 0.1.0 # Version of this Python node extension
+version: 1.0.0 # Version of this Python node extension
 vendor: KNIME AG, Zurich, Switzerland
 license_file: LICENSE.TXT # Best practice: put your LICENSE.TXT next to the knime.yml; otherwise you would need to change to path/to/LICENSE.txt
 feature_dependencies:

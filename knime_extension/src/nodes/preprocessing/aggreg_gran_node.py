@@ -7,20 +7,12 @@ from ..configs.preprocessing.aggrgran import AggregationGranularityParams
 
 LOGGER = logging.getLogger(__name__)
 
-__category = knext.category(
-    path="/community/ts",
-    level_id="proc",
-    name="Preprocessing",
-    description="Nodes for pre-processing timestamp data.",
-    icon="icons/icon.png",
-)
-
 
 @knext.node(
     name="Aggregation Granularity",
     node_type=knext.NodeType.MANIPULATOR,
-    icon_path="icons/icon.png",
-    category=__category,
+    icon_path="icons/preprocessing/Aggregation_Granularity.png",
+    category=kutil.category_processsing,
     id="aggregation_granularity",
 )
 @knext.input_table(
@@ -120,9 +112,14 @@ class AggregationGranularity:
         df_grouped = self.__aggregate(
             df_time_updated, agg_col, selected_time_granularity, selected_aggreg_method
         )
-        df_grouped = df_grouped[
-            [self.aggreg_params.datetime_col, self.aggreg_params.aggregation_column]
-        ]
+        if selected_time_granularity not in (
+            self.aggreg_params.TimeGranularityOpts.QUARTER.name.lower(),
+            self.aggreg_params.TimeGranularityOpts.MONTH.name.lower(),
+            self.aggreg_params.TimeGranularityOpts.WEEK.name.lower(),
+        ):
+            df_grouped = df_grouped[
+                [self.aggreg_params.datetime_col, self.aggreg_params.aggregation_column]
+            ]
 
         return knext.Table.from_pandas(df_grouped)
 

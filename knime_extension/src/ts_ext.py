@@ -9,7 +9,7 @@ category = knext.category(
     level_id="ts",
     name="Time Series Analysis",
     description="Python Nodes for Time Series Analysis",
-    icon="icons/icon.png",
+    icon="icons/Time_Series_Analysis.png",
 )
 
 from nodes.models import sarimanode, sarimaxnode, sarima_apply_node, sarimax_apply_node
