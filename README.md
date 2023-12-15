@@ -10,5 +10,5 @@ This extension is based on [Pandas](https://pandas.pydata.org/ "Pandas") DateTim
 ## Package Organization
 
 
-* `knie_extension`: This directory contains the source code for all KNIME Time Series Extension nodes.
+* `knime_extension`: This directory contains the source code for all KNIME Time Series Extension nodes.
 * `config.yml`: Example `config.yml` to point to the directory containing the source code of the extension. This directory must also contain `knime.yml` file.
