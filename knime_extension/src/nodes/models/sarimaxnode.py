@@ -214,6 +214,8 @@ class SXForecaster:
             [
                 # p
                 self.sarimax_params.learner_params.ar_order_param,
+                # q
+                self.sarimax_params.learner_params.ma_order_param,
                 # s *P
                 self.sarimax_params.learner_params.seasonal_period_param
                 * self.sarimax_params.learner_params.seasoanal_ar_order_param,
