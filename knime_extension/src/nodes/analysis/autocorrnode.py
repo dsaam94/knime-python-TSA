@@ -14,7 +14,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @knext.node(
-    name="Autocorrelation Analysis",
+    name="Autocorrelation Plot",
     node_type=knext.NodeType.VISUALIZER,
     icon_path="icons/Analysis/Autocorrelation_Analysis.png",
     category=kutil.category_analytics,
@@ -38,12 +38,15 @@ class AutoCorrNode:
     This node will generate both an Autocorrelation Function (ACF) plot and a Partial Auotcorrelation Function (PACF) plot. The ACF plot can be used to visualize correlations between the time series and lagged copies of itself, use this to identify seasonalities in your data. The PACF plot is a modified version of the ACF that attempts to account for and remove serial correlation, use this to identify key lag values to include in (S)ARIMA models.
     """
 
-    analysis_params = AutocorrParams()
+    # analysis_params = AutocorrParams()
+
+    target_col = AutocorrParams.target_col
+    max_lag = AutocorrParams.max_lag
 
     def configure(self, configure_context: knext.ConfigurationContext, input_schema):
-        self.analysis_params.target_col = kutil.column_exists_or_preset(
+        self.target_col = kutil.column_exists_or_preset(
             configure_context,
-            self.analysis_params.target_col,
+            self.target_col,
             input_schema,
             kutil.is_numeric,
         )
@@ -77,13 +80,11 @@ class AutoCorrNode:
 
         df = input_table.to_pandas()
 
-        regression_target = df[self.analysis_params.target_col]
+        regression_target = df[self.target_col]
         self._exec_validate(regression_target)
-
+        exec_context.set_progress(0.1)
         # compute acf values along with confidence intervals
-        acf_x, acf_confint = acf(
-            regression_target, nlags=self.analysis_params.max_lag, alpha=__alpha
-        )
+        acf_x, acf_confint = acf(regression_target, nlags=self.max_lag, alpha=__alpha)
 
         # compute mid-point of upper and lower bounds for acf
         margin_error_acf = 0.5 * (acf_confint[:, 1] - acf_confint[:, 0])
@@ -94,9 +95,10 @@ class AutoCorrNode:
 
         acf_x = pd.DataFrame(acf_x, columns=["ACF"])
 
+        exec_context.set_progress(0.2)
         # compute pacf values along with confidence intervals
         pacf_x, pacf_confint = pacf(
-            regression_target, nlags=self.analysis_params.max_lag, alpha=__alpha
+            regression_target, nlags=self.max_lag, alpha=__alpha
         )
         # compute mid-point of upper and lower bounds for pacf
         margin_error_pacf = 0.5 * (pacf_confint[:, 1] - pacf_confint[:, 0])
@@ -105,6 +107,7 @@ class AutoCorrNode:
             margin_error_pacf, columns=["Margin of Error (PACF)"]
         )
 
+        exec_context.set_progress(0.3)
         pacf_x = pd.DataFrame(pacf_x, columns=["PACF"])
 
         df_out = (
@@ -113,24 +116,28 @@ class AutoCorrNode:
             .rename(columns={"index": "Lags"})
         )
         df_out["Lags"] = df_out["Lags"].astype(np.int32)
+        exec_context.set_progress(0.4)
 
         _, ax = plt.subplots(nrows=__nrows, ncols=__ncols, figsize=(__width, __height))
         plot_acf(
             regression_target,
-            lags=self.analysis_params.max_lag,
+            lags=self.max_lag,
             ax=ax[0],
             alpha=__alpha,
         )
+        exec_context.set_progress(0.5)
         plot_pacf(
             regression_target,
-            lags=self.analysis_params.max_lag,
+            lags=self.max_lag,
             ax=ax[1],
             method="ols",
             alpha=__alpha,
         )
+        exec_context.set_progress(0.6)
 
         plt.tight_layout()
         plt.show()
+        exec_context.set_progress(0.9)
 
         return (knext.Table.from_pandas(df_out), knext.view_matplotlib())
 
@@ -146,11 +153,11 @@ class AutoCorrNode:
         if kutil.check_missing_values(target):
             missing_count = kutil.count_missing_values(target)
             raise knext.InvalidParametersError(
-                f"""There are {missing_count} missing values in the selected column."""
+                f"""There are {missing_count} missing values in the selected column. Consider using a Missing Value node to impute missing values beforehand."""
             )
 
         # check maximum lags cannot be more than the number of rows
-        if self.analysis_params.max_lag >= kutil.number_of_rows(target):
+        if self.max_lag >= kutil.number_of_rows(target):
             raise knext.InvalidParametersError(
                 "Maximum number of lags cannot be greater than or equal to the number of rows."
             )

@@ -266,7 +266,7 @@ def extract_time_fields(
         df["year"] = df[series_name].dt.year
         df["quarter"] = df[series_name].dt.quarter
         df["month"] = df[series_name].dt.month
-        df["week"] = df[series_name].dt.week
+        df["week"] = df[series_name].dt.isocalendar().week
         df["day"] = df[series_name].dt.day
         df["hour"] = df[series_name].dt.hour
         df["minute"] = df[series_name].dt.minute
@@ -280,7 +280,7 @@ def extract_time_fields(
         df["year"] = df[series_name].dt.year
         df["quarter"] = df[series_name].dt.quarter
         df["month"] = df[series_name].dt.month
-        df["week"] = df[series_name].dt.week
+        df["week"] = df[series_name].dt.isocalendar().week
         df["day"] = df[series_name].dt.day
 
         df[series_name] = df[series_name].dt.date
@@ -305,7 +305,7 @@ def extract_time_fields(
         df["year"] = df[series_name].dt.year
         df["quarter"] = df[series_name].dt.quarter
         df["month"] = df[series_name].dt.month
-        df["week"] = df[series_name].dt.week
+        df["week"] = df[series_name].dt.isocalendar().week
         df["day"] = df[series_name].dt.day
         df["hour"] = df[series_name].dt.hour
         df["minute"] = df[series_name].dt.minute

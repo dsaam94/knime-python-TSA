@@ -11,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @knext.node(
-    name="Timestamp Alignment",
+    name="Date&Time Aligner",
     node_type=knext.NodeType.MANIPULATOR,
     icon_path="icons/preprocessing/Timestamp_Alignment.png",
     category=kutil.category_processsing,
@@ -29,7 +29,10 @@ class TimestampAlignmentNode:
     """
     Checks a table for non-existent timestamps and generates rows with missing values for them.
 
-    Select a timestamp column and a time granularity. The node will verify that a record exists in your table for each value at that granularity, for example if you select hours it will check for 01:00, 02:00, 03:00… if a timestamp is not found it will be inserted and missing values generated for the remaining columns. Use this in combination with the missing value node to correct missing time series data.
+    Select a timestamp column and a time granularity. The node will verify that a record exists in your table for each value at that granularity, for example if you select hours it will check for 01:00, 02:00, 03:00… if a timestamp is not found it will be inserted and missing values generated for the remaining columns.
+    The final output is sorted in ascending order of newly generated timestsamp.
+    Use this in combination with the missing value node to correct missing time series data.
+    This node preserves duplicated values and possibly lead to cluttered output. Therefore, in case of duplicated timestamps, we encourage using *Date&Time Granularity* node before using this node.
     """
 
     ts_align_params = TimeStampAlignmentParams()

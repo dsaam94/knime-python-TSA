@@ -9,7 +9,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @knext.node(
-    name="Differencing",
+    name="Differencer",
     node_type=knext.NodeType.MANIPULATOR,
     icon_path="icons/preprocessing/Differencing.png",
     category=kutil.category_processsing,

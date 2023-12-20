@@ -11,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @knext.node(
-    name="SARIMA Forecaster",
+    name="SARIMA Learner",
     node_type=knext.NodeType.LEARNER,
     icon_path="icons/models/SARIMA_Forecaster.png",
     category=kutil.category_models,
@@ -26,11 +26,11 @@ LOGGER = logging.getLogger(__name__)
     description="Table containing forecasts for the configured column, the first value will be 1 timestamp ahead of the final training value used.",
 )
 @knext.output_table(
-    name="In-sample & Residuals",
+    name="Residuals",
     description="In sample model prediction values and residuals i.e. difference between observed value and the predicted output.",
 )
 @knext.output_table(
-    name="Model Summary",
+    name="Coefficients and Statistics",
     description="Table containing fitted model coefficients, variance of residuals (sigma2), and several model metrics along with their standard errors.",
 )
 @knext.output_binary(
@@ -132,7 +132,7 @@ class SarimaForcaster:
         # in-samples
         in_samples = pd.Series(dtype=np.float64)
 
-        in_samples = in_samples.append(
+        in_samples = in_samples._append(
             model_fit.predict(
                 start=1, dynamic=self.sarima_params.predictor_params.dynamic_check
             )

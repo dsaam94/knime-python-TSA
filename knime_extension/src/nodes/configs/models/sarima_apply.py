@@ -3,7 +3,7 @@ import knime.extension as knext
 import pickle
 
 
-@knext.parameter_group(label="Sarima Predictor Parameters")
+@knext.parameter_group(label="")
 class SPredictorApplyParams(_PredictorParams):
 
     """
@@ -21,7 +21,7 @@ class SPredictorApplyParams(_PredictorParams):
     )
 
 
-@knext.parameter_group(label="Sarima Forecaster (Apply) Settings")
+@knext.parameter_group(label="")
 class SarimaForecasterParms:
     """
 
