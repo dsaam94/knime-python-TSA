@@ -9,7 +9,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @knext.node(
-    name="Aggregation Granularity",
+    name="Date&Time Granularity",
     node_type=knext.NodeType.MANIPULATOR,
     icon_path="icons/preprocessing/Aggregation_Granularity.png",
     category=kutil.category_processsing,

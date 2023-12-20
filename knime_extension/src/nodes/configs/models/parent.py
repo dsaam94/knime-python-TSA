@@ -63,7 +63,7 @@ class _LearnerParams:
     )
 
     natural_log = knext.BoolParameter(
-        label="Log Transform",
+        label="Log-transform data for modeling",
         description="Optionally log your target column before model fitting and exponentiate the forecast before output. This may help reduce variance in the training data.",
         default_value=False,
     )
@@ -110,7 +110,7 @@ class _PredictorParams:
     )
 
     dynamic_check = knext.BoolParameter(
-        label="Dynamic",
+        label="Generate in-samples dynamically",
         description="Check this box to use in-sample prediction as lagged values. Otherwise use true values.",
         default_value=False,
     )

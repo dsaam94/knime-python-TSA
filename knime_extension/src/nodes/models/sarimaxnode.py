@@ -11,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @knext.node(
-    name="SARIMAX Forecaster",
+    name="SARIMAX Learner",
     node_type=knext.NodeType.LEARNER,
     icon_path="icons/models/SARIMAX_Forecaster.png",
     category=kutil.category_models,
