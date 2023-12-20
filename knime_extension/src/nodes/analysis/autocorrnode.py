@@ -132,10 +132,11 @@ class AutoCorrNode:
             method="ols",
             alpha=__alpha,
         )
-        exec_context.set_progress(0.9)
 
+        exec_context.set_progress(0.6)
         plt.tight_layout()
         plt.show()
+        exec_context.set_progress(0.9)
 
         return (knext.Table.from_pandas(df_out), knext.view_matplotlib())
 
