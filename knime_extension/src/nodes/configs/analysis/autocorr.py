@@ -5,7 +5,7 @@ from util import utils as kutil
 LOGGER = logging.getLogger(__name__)
 
 
-@knext.parameter_group(label="Visualization Parameters")
+# @knext.parameter_group(label="Visualization Parameters")
 class AutocorrParams:
     target_col = knext.ColumnParameter(
         label="Value Column",
