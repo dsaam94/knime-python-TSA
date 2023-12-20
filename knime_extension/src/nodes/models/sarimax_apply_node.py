@@ -25,10 +25,10 @@ LOGGER = logging.getLogger(__name__)
     name="Forecast", description="Forecasted values and their standard errors"
 )
 # @knext.output_table(
-#     name="Coefficients and Statistics", description="Residuals from the training model"
+#     name="In-sample & Residuals", description="Residuals from the training model"
 # )
 # @knext.output_table(
-#     name="Model Summary",
+#     name="Coefficients and Statistics",
 #     description="Table containing coefficient statistics and other criterion.",
 # )
 class SXForecaster:

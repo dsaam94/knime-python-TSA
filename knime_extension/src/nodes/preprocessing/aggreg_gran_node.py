@@ -8,8 +8,8 @@ from ..configs.preprocessing.aggrgran import AggregationGranularityParams
 LOGGER = logging.getLogger(__name__)
 
 
-@knext.node(
-    name="Date&Time Granularity",
+@knext.node( 
+    name="Date&Time Aggregator",
     node_type=knext.NodeType.MANIPULATOR,
     icon_path="icons/preprocessing/Aggregation_Granularity.png",
     category=kutil.category_processsing,
@@ -133,7 +133,9 @@ class AggregationGranularity:
 
         df = df_time.copy()
 
-        date = df[self.aggreg_params.datetime_col].astype(np.datetime64)
+        date = df[self.aggreg_params.datetime_col].astype(
+            "datetime64[ns]"
+        )  # TODO Please rename date to date_col OR date_column
 
         # check if granularity level is
         if time_gran in (
@@ -228,6 +230,7 @@ class AggregationGranularity:
             .agg(value)
             .reset_index()
         )
+        # TODO Cast here to 32
         return df
 
     def __append_time_zone(self, date_col: pd.DataFrame, zoned: pd.Series):

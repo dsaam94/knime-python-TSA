@@ -94,6 +94,7 @@ class AutoCorrNode:
         )
 
         acf_x = pd.DataFrame(acf_x, columns=["ACF"])
+
         exec_context.set_progress(0.2)
         # compute pacf values along with confidence intervals
         pacf_x, pacf_confint = pacf(
@@ -105,6 +106,7 @@ class AutoCorrNode:
         margin_error_pacf = pd.DataFrame(
             margin_error_pacf, columns=["Margin of Error (PACF)"]
         )
+
         exec_context.set_progress(0.3)
         pacf_x = pd.DataFrame(pacf_x, columns=["PACF"])
 
@@ -114,7 +116,6 @@ class AutoCorrNode:
             .rename(columns={"index": "Lags"})
         )
         df_out["Lags"] = df_out["Lags"].astype(np.int32)
-
         exec_context.set_progress(0.4)
 
         _, ax = plt.subplots(nrows=__nrows, ncols=__ncols, figsize=(__width, __height))
@@ -132,8 +133,8 @@ class AutoCorrNode:
             method="ols",
             alpha=__alpha,
         )
-
         exec_context.set_progress(0.6)
+
         plt.tight_layout()
         plt.show()
         exec_context.set_progress(0.9)

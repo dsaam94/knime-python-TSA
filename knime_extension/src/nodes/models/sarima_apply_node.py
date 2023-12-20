@@ -25,14 +25,7 @@ LOGGER = logging.getLogger(__name__)
     name="Forecast",
     description="Table containing forecasts for the configured column, the first value will be one timestamp ahead of the final training value used.",
 )
-# @knext.output_table(
-#     name="In-sample & Residuals",
-#     description="In-sample model prediction values and residuals i.e. difference between observed value and the predicted output.",
-# )
-# @knext.output_table(
-#     name="Model Summary",
-#     description="Table containing fitted model coefficients, variance of residuals (sigma2), and several model metrics along with their standard errors.",
-# )
+
 class SarimaForcasterApply:
     """
     This node generates forecasts with a (S)ARIMA Model.

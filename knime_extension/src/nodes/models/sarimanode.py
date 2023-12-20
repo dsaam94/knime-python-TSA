@@ -132,7 +132,7 @@ class SarimaForcaster:
         # in-samples
         in_samples = pd.Series(dtype=np.float64)
 
-        in_samples = in_samples.append(
+        in_samples = in_samples._append(
             model_fit.predict(
                 start=1, dynamic=self.sarima_params.predictor_params.dynamic_check
             )
