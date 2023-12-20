@@ -9,4 +9,4 @@ version: 1.0.0 # Version of this Python node extension
 vendor: KNIME AG, Zurich, Switzerland
 license_file: LICENSE.TXT # Best practice: put your LICENSE.TXT next to the knime.yml; otherwise you would need to change to path/to/LICENSE.txt
 feature_dependencies:
-  - org.knime.features.python3.scripting 5.2.0
+  - org.knime.features.python3.scripting 5.1.0
