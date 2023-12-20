@@ -11,7 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 @knext.node(
-    name="Date&Time Alignment",
+    name="Date&Time Aligner",
     node_type=knext.NodeType.MANIPULATOR,
     icon_path="icons/preprocessing/Timestamp_Alignment.png",
     category=kutil.category_processsing,
