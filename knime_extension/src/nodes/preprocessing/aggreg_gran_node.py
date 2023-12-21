@@ -8,7 +8,7 @@ from ..configs.preprocessing.aggrgran import AggregationGranularityParams
 LOGGER = logging.getLogger(__name__)
 
 
-@knext.node(
+@knext.node( 
     name="Date&Time Aggregator",
     node_type=knext.NodeType.MANIPULATOR,
     icon_path="icons/preprocessing/Aggregation_Granularity.png",

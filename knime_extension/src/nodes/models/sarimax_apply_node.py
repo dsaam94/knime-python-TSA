@@ -137,34 +137,34 @@ class SXForecaster:
                 "The number of forecasts should be equal to the length of the exogenous input for forecasts."
             )
 
-    def model_summary(self, model):
-        # estimates of the parameter coefficients
-        coeff = model.params.to_frame()
+    # def model_summary(self, model):
+    #     # estimates of the parameter coefficients
+    #     coeff = model.params.to_frame()
 
-        # calculate standard deviation of the parameters in the coefficients
-        coeff_errors = model.bse.to_frame().reset_index()
-        coeff_errors["index"] = coeff_errors["index"].apply(lambda x: x + " Std. Err")
-        coeff_errors = coeff_errors.set_index("index")
+    #     # calculate standard deviation of the parameters in the coefficients
+    #     coeff_errors = model.bse.to_frame().reset_index()
+    #     coeff_errors["index"] = coeff_errors["index"].apply(lambda x: x + " Std. Err")
+    #     coeff_errors = coeff_errors.set_index("index")
 
-        # extract log likelihood of the trained model
-        log_likelihood = pd.DataFrame(
-            data=model.llf, index=["Log Likelihood"], columns=[0]
-        )
+    #     # extract log likelihood of the trained model
+    #     log_likelihood = pd.DataFrame(
+    #         data=model.llf, index=["Log Likelihood"], columns=[0]
+    #     )
 
-        # extract AIC (Akaike Information Criterion)
-        aic = pd.DataFrame(data=model.aic, index=["AIC"], columns=[0])
+    #     # extract AIC (Akaike Information Criterion)
+    #     aic = pd.DataFrame(data=model.aic, index=["AIC"], columns=[0])
 
-        # extract BIC (Bayesian Information Criterion)
-        bic = pd.DataFrame(data=model.bic, index=["BIC"], columns=[0])
+    #     # extract BIC (Bayesian Information Criterion)
+    #     bic = pd.DataFrame(data=model.bic, index=["BIC"], columns=[0])
 
-        # extract Mean Squared Error
-        mse = pd.DataFrame(data=model.mse, index=["MSE"], columns=[0])
+    #     # extract Mean Squared Error
+    #     mse = pd.DataFrame(data=model.mse, index=["MSE"], columns=[0])
 
-        # extract Mean Absolute error
-        mae = pd.DataFrame(data=model.mae, index=["MAE"], columns=[0])
+    #     # extract Mean Absolute error
+    #     mae = pd.DataFrame(data=model.mae, index=["MAE"], columns=[0])
 
-        summary = pd.concat(
-            [coeff, coeff_errors, log_likelihood, aic, bic, mse, mae]
-        ).rename(columns={0: "value"})
+    #     summary = pd.concat(
+    #         [coeff, coeff_errors, log_likelihood, aic, bic, mse, mae]
+    #     ).rename(columns={0: "value"})
 
-        return summary
+    #     return summary
