@@ -46,8 +46,6 @@ class SXForecaster:
     """
     Trains and generates a forecast with a (S)ARIMAX Model.
 
-    # SARIMAX Model Training
-
     Trains and generates a forecast using a Seasonal AutoRegressive Integrated Moving Average with eXogenous (SARIMAX) terms model. The SARIMAX models captures temporal structures in time series data in the following components:
 
     - **AR (AutoRegressive):** Relationship between the current observation and a number (p) of lagged observations.

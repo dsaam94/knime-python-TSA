@@ -42,9 +42,6 @@ class SarimaForcaster:
     """
     Trains and generates a forecast with a (S)ARIMA Model
 
-
-    # SARIMA Model Training
-
     Trains and generates a forecast using a Seasonal AutoRegressive Integrated Moving Average (SARIMA) model. The SARIMA models captures temporal structures in time series data in the following components:
 
     - **AR (AutoRegressive):** Relationship between the current observation and a number (p) of lagged observations.
