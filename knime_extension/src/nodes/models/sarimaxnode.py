@@ -49,17 +49,13 @@ class SXForecaster:
     Trains and generates a forecast using a Seasonal AutoRegressive Integrated Moving Average with eXogenous (SARIMAX) terms model. The SARIMAX models captures temporal structures in time series data in the following components:
 
     - **AR (AutoRegressive):** Relationship between the current observation and a number (p) of lagged observations.
-
     - **I (Integrated):** Degree (d) of differencing required to make the time series stationary.
-
     - **MA (Moving Average):** Time series mean and the relationship between the current forecast error and a number (q) of lagged forecast errors.
 
     *Seasonal versions of these components operate similarly, with lag intervals equal to the seasonal period (S).*
 
     Additionally, this node requires an *exogenous* column that externally influences the model. This column must be provided both for model training and forecasting. However, ensure that the number of rows in the exogenous variable to be used for forecasts must be equal to the number of forecasts to be made.
     Ensure that neither of the selected columns in the node configuration dialogue must contain a missing value.
-
-
     """
 
     sarimax_params = SarimaxForecasterParms()
