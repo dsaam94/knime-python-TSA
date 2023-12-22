@@ -132,11 +132,10 @@ class SarimaForcaster:
         # in-samples
         in_samples = pd.Series(dtype=np.float64)
 
-        in_samples = in_samples._append(
-            model_fit.predict(
-                start=1, dynamic=self.sarima_params.predictor_params.dynamic_check
-            )
+        preds_col = model_fit.predict(
+            start=1, dynamic=self.sarima_params.predictor_params.dynamic_check
         )
+        in_samples = pd.concat([in_samples, preds_col])
 
         # reverse log transformation for in-sample values
         if self.sarima_params.learner_params.natural_log:

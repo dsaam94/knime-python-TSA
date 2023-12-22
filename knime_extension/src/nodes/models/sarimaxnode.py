@@ -148,11 +148,11 @@ class SXForecaster:
 
         # in-samples
         in_samples = pd.Series(dtype=np.float64)
-        in_samples = in_samples._append(
-            model_fit.predict(
-                start=1, dynamic=self.sarimax_params.predictor_params.dynamic_check
-            )
+
+        preds_col = model_fit.predict(
+            start=1, dynamic=self.sarimax_params.predictor_params.dynamic_check
         )
+        in_samples = pd.concat([in_samples, preds_col])
 
         # check if log transformation is enabled
         if self.sarimax_params.learner_params.natural_log:

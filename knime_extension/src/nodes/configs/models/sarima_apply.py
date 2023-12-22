@@ -3,7 +3,6 @@ import knime.extension as knext
 import pickle
 
 
-@knext.parameter_group(label="")
 class SPredictorApplyParams(_PredictorParams):
 
     """
@@ -21,7 +20,6 @@ class SPredictorApplyParams(_PredictorParams):
     )
 
 
-@knext.parameter_group(label="")
 class SarimaForecasterParms:
     """
 
