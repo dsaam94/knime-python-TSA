@@ -126,7 +126,7 @@ class SXForecaster:
             order=(
                 self.sarimax_params.learner_params.ar_order_param,
                 self.sarimax_params.learner_params.i_order_param,
-                self.sarimax_params.learner_params.i_order_param,
+                self.sarimax_params.learner_params.ma_order_param,
             ),
             seasonal_order=(
                 self.sarimax_params.learner_params.seasoanal_ar_order_param,
