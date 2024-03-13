@@ -23,15 +23,16 @@ LOGGER = logging.getLogger(__name__)
     id="residual_analyzer",
 )
 @knext.input_table(
-    name="Residuals", description="Input table containing the residuals."
+    name="Residuals",
+    description="The input table that contains a numeric column representing the residuals from a forecasting model.",
 )
 @knext.output_table(
     name="Cummulative Sum or Residuals & Variance",
-    description="This table contains the cummulative sum of residuals and variances plotted on the bottom-left plot.",
+    description="Table containing the values from the Cumulative sums plot",
 )
 @knext.output_table(
     name="Summary Statistics",
-    description="This table contains the summary of metrics in relation to analyzing residuals.",
+    description="Table representation of the test statistics",
 )
 @knext.output_view(
     name="Residual Analysis",
@@ -41,7 +42,15 @@ class ResidualAnalyzerNode:
     """
     This node analyzes the residuals of a SARIMA model.
 
-    This node will generate the necessary summary statistics for analyzing residuals. In order to provide more flexibility to users and create interactive few, cumulative sum of residuals and variance are made available in the first output port.
+    This node is designed to provide an overview of the residuals from a forecasting model. Upon inputting residual data, the node processes and visualizes the information through a multi-part dashboard with the following elements
+
+    - **Residuals Scatter Plot**: This plot displays the residuals by observation index to help visually assess the randomness and identify patterns or systematic deviations, which are crucial for diagnosing model fit.
+    - **Histogram of Residuals:** The histogram presents the distribution of residuals. A bell-shaped, symmetrical distribution centered around zero indicates that the residuals are normally distributed, an assumption underlying many models.
+    - **Cumulative Sums Plot:** This plot features two lines; one showing the cumulative sum of residuals and the other displaying the cumulative sum of squared residuals, which serves as a proxy for variance. This dual-axis plot helps detect any shifts in the central tendency and changes in the variance of the residuals over time. The sum is expected to fluctuate around zero and the sum of squares is expected to grow linearly.
+    - **Statistical Tests**:
+
+        - **Normality Test (Shapiro-Wilk):** This test examines whether the residuals follow a normal distribution, reporting a test statistic and p-value. A non-normal distribution may suggest that the model does not fully capture the data’s behavior. The Test statistic ranges from 0 to 1 with 1 being a perfect match to the normal distribution.
+        - **Autocorrelation Test (Durbin-Watson):** This test looks for the presence of autocorrelation in the residuals. A durbin-watson test statistic near 2 implies no autocorrelation while values farther from 2 indicate positive or negative autocorrelation in the materials suggesting some patterns in the data may not have been captured by the model.
     """
 
     residuals_col = ResidualAnalyzerParams.residuals_col
