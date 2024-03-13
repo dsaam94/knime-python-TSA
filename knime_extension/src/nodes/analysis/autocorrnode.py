@@ -38,8 +38,6 @@ class AutoCorrNode:
     This node will generate both an Autocorrelation Function (ACF) plot and a Partial Auotcorrelation Function (PACF) plot. The ACF plot can be used to visualize correlations between the time series and lagged copies of itself, use this to identify seasonalities in your data. The PACF plot is a modified version of the ACF that attempts to account for and remove serial correlation, use this to identify key lag values to include in (S)ARIMA models.
     """
 
-    # analysis_params = AutocorrParams()
-
     target_col = AutocorrParams.target_col
     max_lag = AutocorrParams.max_lag
 

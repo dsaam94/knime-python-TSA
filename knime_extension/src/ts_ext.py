@@ -18,4 +18,4 @@ from nodes.preprocessing import (
     differencing_node,
     timestamp_alignment_node,
 )
-from nodes.analysis import autocorrnode
+from nodes.analysis import autocorrnode, residuals_analyzer_node
