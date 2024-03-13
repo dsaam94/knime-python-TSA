@@ -28,11 +28,11 @@ LOGGER = logging.getLogger(__name__)
 )
 @knext.output_table(
     name="Cummulative Sum or Residuals & Variance",
-    description="Table containing the values from the Cumulative sums plot",
+    description="Table containing the values from the Cumulative sums plot.",
 )
 @knext.output_table(
     name="Summary Statistics",
-    description="Table representation of the test statistics",
+    description="Table representation of the test statistics.",
 )
 @knext.output_view(
     name="Residual Analysis",
@@ -40,7 +40,7 @@ LOGGER = logging.getLogger(__name__)
 )
 class ResidualAnalyzerNode:
     """
-    This node analyzes the residuals of a SARIMA model.
+    This node analyzes the residuals of a model.
 
     This node is designed to provide an overview of the residuals from a forecasting model. Upon inputting residual data, the node processes and visualizes the information through a multi-part dashboard with the following elements:
 
@@ -48,7 +48,7 @@ class ResidualAnalyzerNode:
     - **Histogram of Residuals:** The histogram presents the distribution of residuals. A bell-shaped, symmetrical distribution centered around zero indicates that the residuals are normally distributed, an assumption underlying many models.
     - **Cumulative Sums Plot:** This plot features two lines; one showing the cumulative sum of residuals and the other displaying the cumulative sum of squared residuals, which serves as a proxy for variance. This dual-axis plot helps detect any shifts in the central tendency and changes in the variance of the residuals over time. The sum is expected to fluctuate around zero and the sum of squares is expected to grow linearly.
     - **Statistical Tests:**
-        - **Normality Test (Shapiro-Wilk):** This test examines whether the residuals follow a normal distribution, reporting a test statistic and p-value. A non-normal distribution may suggest that the model does not fully capture the data’s behavior. The Test statistic ranges from 0 to 1 with 1 being a perfect match to the normal distribution.
+        - **Normality Test (Shapiro-Wilk):** This test examines whether the residuals follow a normal distribution, reporting a test statistic and p-value. A non-normal distribution may suggest that the model does not fully capture the data behavior. The Test statistic ranges from 0 to 1 with 1 being a perfect match to the normal distribution.
         - **Autocorrelation Test (Durbin-Watson):** This test looks for the presence of autocorrelation in the residuals. A durbin-watson test statistic near 2 implies no autocorrelation while values farther from 2 indicate positive or negative autocorrelation in the materials suggesting some patterns in the data may not have been captured by the model.
     """
 
