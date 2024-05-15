@@ -8,7 +8,7 @@ from ..configs.preprocessing.aggrgran import AggregationGranularityParams
 LOGGER = logging.getLogger(__name__)
 
 
-@knext.node( 
+@knext.node(
     name="Date&Time Aggregator",
     node_type=knext.NodeType.MANIPULATOR,
     icon_path="icons/preprocessing/Aggregation_Granularity.png",
@@ -133,9 +133,14 @@ class AggregationGranularity:
 
         df = df_time.copy()
 
-        date = df[self.aggreg_params.datetime_col].astype(
-            "datetime64[ns]"
-        )  # TODO Please rename date to date_col OR date_column
+        if kn_date_time_type == kutil.DEF_TIME_LABEL:
+            date = pd.to_datetime(
+                df[self.aggreg_params.datetime_col], format=kutil.TIME_FORMAT
+            ).dt.strftime("%H:%M:%S")
+        else:
+            date = df[self.aggreg_params.datetime_col].astype(
+                "datetime64[ns]"
+            )  # TODO Please rename date to date_col OR date_column
 
         # check if granularity level is
         if time_gran in (
