@@ -3,7 +3,7 @@ author: Ali Asghar Marvi & Corey Weisinger
 bundled_env_name: org_knime_pythonscripting # we re-use the bundled Python environment
 extension_module: src/ts_ext # The .py Python module containing the nodes of your extension
 description: Time Series Extension # Human readable bundle name / description
-long_description: Replacing Time Series Components in KNIME .
+long_description: The Time Series Extensions offers nodes for forecasting using the SARIMA and SARIMAX models These nodes include tools for cleaning time series data, creating diagnostic plots such as ACF and PACF plots, and performing residual analysis for evaluation to support the use of SARIMA(X) forecasting nodes.
 group_id: org.knime
 version: 1.0.0 # Version of this Python node extension
 vendor: KNIME AG, Zurich, Switzerland
