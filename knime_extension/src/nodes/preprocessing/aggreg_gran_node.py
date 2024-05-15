@@ -138,9 +138,7 @@ class AggregationGranularity:
                 df[self.aggreg_params.datetime_col], format=kutil.TIME_FORMAT
             ).dt.strftime("%H:%M:%S")
         else:
-            date = df[self.aggreg_params.datetime_col].astype(
-                "datetime64[ns]"
-            )  # TODO Please rename date to date_col OR date_column
+            date = df[self.aggreg_params.datetime_col].astype("datetime64[ns]")
 
         # check if granularity level is
         if time_gran in (
